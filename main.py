@@ -12,7 +12,6 @@ app = Flask(__name__)
 def start():
     return render_template('index.html')
 
-
 @app.route('/setup')
 def setup():
     base = Database(getenv('DB_NAME'))
