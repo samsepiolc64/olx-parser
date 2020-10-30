@@ -8,10 +8,13 @@ load_dotenv()
 
 app = Flask(__name__)
 
+<<<<<<< HEAD
 @app.route('/')
 def start():
     return render_template('index.html')
 
+=======
+>>>>>>> origin/main
 @app.route('/setup')
 def setup():
     base = Database(getenv('DB_NAME'))
