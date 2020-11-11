@@ -33,28 +33,7 @@ class Database:
     def fetch_search(self):
         xlsxPhrases = self.cursor.execute('''SELECT phrase FROM xlsx''').fetchall()
         listResult = [x[0] for x in xlsxPhrases]
-
-        # print(
-        #
-        #     "SELECT * FROM offers WHERE title IN {}".format(tuple(listResult))
-        # )
-
-        #result = self.cursor.execute(f"SELECT * FROM offers WHERE title MATCH {' OR '.join(['?' for _ in listResult])}", listResult)
-        #result = self.cursor.execute(f"SELECT * FROM offers WHERE title REGEXP {'|'.join(['?' for _ in listResult])}", listResult)
-
-        #query = "SELECT * FROM offers WHERE title IN {}".format(tuple(listResult))
-
-        # listResult = ['Ziemniaki']
-        #
-        # query = "SELECT link FROM offers WHERE title IN {}".format(tuple(listResult))
-        # result = self.cursor.execute(query)
-
         listResult = ['%'+s+'%' for s in listResult]
-        print(listResult)
-
-        #result = self.cursor.execute("SELECT * FROM offers WHERE title=?;", listResult[0])
         result = self.cursor.execute(f"SELECT * FROM offers WHERE details LIKE {' OR title LIKE '.join(['?' for _ in listResult])}", listResult)
-        # for i in result:
-        #     print(i)
         self.db.commit()
-        #return result
+        return list(result)
