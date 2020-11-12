@@ -1,14 +1,12 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Index</title>
-</head>
-<body>
+{% extends "bootstrap/base.html" %}
+{% block content %}
+<h1>OLX Parser</h1>
 
-    it works!
-    {{zm}}
-
-</body>
-</html>
+<div class="alert alert-danger" role="alert">
+  {{zm}}
+</div>
+{% endblock %}
+{% block scripts %}
+{{ super() }}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+{% endblock %}

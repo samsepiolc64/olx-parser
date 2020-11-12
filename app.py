@@ -1,4 +1,5 @@
 from flask import Flask, render_template, request
+from flask_bootstrap import Bootstrap
 from database import Database
 from getoffers import GetOffers
 from xlsx2db import Xlsx2Db
@@ -10,6 +11,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 app = Flask(__name__)
+Bootstrap(app)
 
 @app.route('/')
 def start():
