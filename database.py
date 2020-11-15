@@ -13,7 +13,8 @@ class Database:
             self.cursor.execute(sql)
             self.db.commit()
         except:
-            print('table exists')
+            return "table exists"
+
 
     def insert(self, *values):
         self.cursor.execute(f"INSERT INTO offers VALUES ({','.join(['?' for _ in values])})", values)
@@ -25,15 +26,17 @@ class Database:
 
     def fetch_link(self, **conditions):
         values = list(conditions.values())[0]
-        result = self.cursor.execute('''SELECT * FROM offers WHERE title LIKE ?''', [f"%{values}%"])
+        result = self.cursor.execute('''SELECT link FROM offers WHERE title LIKE ?''', [f"%{values}%"])
         self.db.commit()
         return result
-        #return self.cursor.execute(f"SELECT * FROM offers WHERE title LIKE '%{values}%'")
 
     def fetch_search(self):
-        xlsxPhrases = self.cursor.execute('''SELECT phrase FROM xlsx''').fetchall()
-        listResult = [x[0] for x in xlsxPhrases]
-        listResult = ['%'+s+'%' for s in listResult]
-        result = self.cursor.execute(f"SELECT * FROM offers WHERE details LIKE {' OR title LIKE '.join(['?' for _ in listResult])}", listResult)
-        self.db.commit()
-        return list(result)
+        try:
+            xlsxPhrases = self.cursor.execute('''SELECT phrase FROM xlsx''').fetchall()
+            listResult = [x[0] for x in xlsxPhrases]
+            listResult = ['%'+s+'%' for s in listResult]
+            result = self.cursor.execute(f"SELECT link FROM offers WHERE details LIKE {' OR title LIKE '.join(['?' for _ in listResult])}", listResult)
+            self.db.commit()
+            return list(result)
+        except:
+            return "tables not found"

@@ -1,16 +1,16 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Upload</title>
-</head>
-<body>
-
-<form class="" action="phrases" method="post">
-    <input type="file" name="csvfile" value="">
-    <input type="submit" name="" value="Submit">
-</form>
-
-</body>
-</html>
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+{% block title %}
+    Upload
+{% endblock %}
+{% block content %}
+<div class="container">
+    <form class="" action="phrases" method="POST">
+        <dl>
+            {{ form.csrf_token }}
+            {{ wtf.form_field(form.xlsxfile) }}
+            <input class="btn btn-primary" type="submit" name="" value="Submit">
+        </dl>
+    </form>
+</div>
+{% endblock %}

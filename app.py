@@ -5,6 +5,16 @@ from getoffers import GetOffers
 from xlsx2db import Xlsx2Db
 from sys import argv
 from os import getenv
+
+from flask_wtf import FlaskForm
+#from wtforms import FileField
+from flask_wtf.file import FileField, FileRequired
+
+from flask_nav import Nav
+from flask_nav.elements import Navbar, Subgroup, View
+
+
+
 import pandas as pd
 #import csv
 from dotenv import load_dotenv
@@ -12,22 +22,40 @@ load_dotenv()
 
 app = Flask(__name__)
 Bootstrap(app)
+nav = Nav(app)
+
+app.config['SECRET_KEY'] = getenv('SECRET_KEY')
+
+class UploadForm(FlaskForm):
+    xlsxfile = FileField('xlsxfile', validators=[FileRequired()])
+
+@nav.navigation('mysite_navbar')
+def create_navbar():
+    setup_view = View('Clear and create database', 'setup')
+    add_data_view = View('Add pages', 'add')
+    search_view = View('Show links', 'search')
+    upload_view = View('Upload Excel', 'upload')
+    return Navbar('OLX Parser', setup_view, add_data_view, upload_view, search_view )
 
 @app.route('/')
 def start():
-    return render_template('index.html')
+    return render_template('index.html', pb = "width: 0%")
 
 @app.route('/setup')
 def setup():
     base = Database(getenv('DB_NAME'))
+    base.create_db(getenv('SQL_DROP_OFFER'))
+    base.create_db(getenv('SQL_DROP_XLSX'))
     base.create_db(getenv('SQL_OFFER'))
     base.create_db(getenv('SQL_XLSX'))
+    return render_template('index.html', zm = "create tables")
 
 @app.route('/add')
 def add():
-    for page in range(1, 25):
+    for page in range(1, 2):
         offers = GetOffers(getenv('URL'), page)
         offers.get_offers()
+    return render_template('index.html', zm = "add data")
 
 @app.route('/list/<search>')
 def index(search):
@@ -43,12 +71,15 @@ def search():
 
 @app.route('/upload', methods = ['GET', 'POST'])
 def upload():
-    return render_template('upload.html')
+    form = UploadForm()
+    if form.validate_on_submit():
+        return 'Form Successfully Submitted!'
+    return render_template('upload.html', form = form)
 
 @app.route('/phrases', methods = ['GET', 'POST'])
 def phrases():
     if request.method == 'POST':
-        user_csv = request.form['csvfile']
+        user_csv = request.form['xlsxfile']
         data = pd.read_excel(user_csv, index_col=None, header=None).values
         xlsx = Xlsx2Db()
         xlsx.xlsx2db(data)
