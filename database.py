@@ -35,8 +35,8 @@ class Database:
             xlsxPhrases = self.cursor.execute('''SELECT phrase FROM xlsx''').fetchall()
             listResult = [x[0] for x in xlsxPhrases]
             listResult = ['%'+s+'%' for s in listResult]
-            result = self.cursor.execute(f"SELECT link FROM offers WHERE details LIKE {' OR title LIKE '.join(['?' for _ in listResult])}", listResult)
+            result = self.cursor.execute(f"SELECT * FROM offers WHERE details LIKE {' OR title LIKE '.join(['?' for _ in listResult])}", listResult)
             self.db.commit()
             return list(result)
         except:
-            return "tables not found"
+            return []

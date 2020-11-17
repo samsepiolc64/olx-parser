@@ -31,15 +31,21 @@ class UploadForm(FlaskForm):
 
 @nav.navigation('mysite_navbar')
 def create_navbar():
-    setup_view = View('Clear and create database', 'setup')
-    add_data_view = View('Add pages', 'add')
+    start_view = View('Start', 'start')
     search_view = View('Show links', 'search')
     upload_view = View('Upload Excel', 'upload')
-    return Navbar('OLX Parser', setup_view, add_data_view, upload_view, search_view )
+    add_data_view = View('Add pages', 'add')
+    setup_view = View('Clear and create database', 'setup')
+    admin_view = Subgroup('Create data',
+                upload_view,
+                add_data_view,
+                setup_view
+             )
+    return Navbar('OLX Parser', start_view, admin_view, search_view)
 
 @app.route('/')
 def start():
-    return render_template('index.html', pb = "width: 0%")
+    return render_template('index.html', page = "100")
 
 @app.route('/setup')
 def setup():
@@ -48,14 +54,14 @@ def setup():
     base.create_db(getenv('SQL_DROP_XLSX'))
     base.create_db(getenv('SQL_OFFER'))
     base.create_db(getenv('SQL_XLSX'))
-    return render_template('index.html', zm = "create tables")
+    return render_template('index.html', info = "create tables")
 
 @app.route('/add')
 def add():
-    for page in range(1, 2):
+    for page in range(1, 3):
         offers = GetOffers(getenv('URL'), page)
         offers.get_offers()
-    return render_template('index.html', zm = "add data")
+    return render_template('index.html', info = "add data")
 
 @app.route('/list/<search>')
 def index(search):
@@ -67,7 +73,7 @@ def index(search):
 def search():
     base = Database(getenv('DB_NAME'))
     links = base.fetch_search()
-    return render_template('index.html', zm = links)
+    return render_template('index.html', links = links)
 
 @app.route('/upload', methods = ['GET', 'POST'])
 def upload():
@@ -83,7 +89,7 @@ def phrases():
         data = pd.read_excel(user_csv, index_col=None, header=None).values
         xlsx = Xlsx2Db()
         xlsx.xlsx2db(data)
-        return render_template('phrases.html', data=data)
+        return render_template('index.html', data=data)
 
 def main():
     if len(argv) > 1 and argv[1] == 'setup':

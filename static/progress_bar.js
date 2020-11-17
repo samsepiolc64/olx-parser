@@ -1,4 +1,4 @@
 $(document).ready(function(){
-percent = "50%";
+var percent = page+"%";
 $('#progressBar').attr('aria-valuenow', percent).css('width', percent).text(percent);
 });

@@ -1,4 +1,7 @@
 {% extends "base.html" %}
+{% block title %}
+    Index
+{% endblock %}
 {% block content %}
   <div class="container">
     <div class="progress">
@@ -6,7 +9,19 @@
     </div>
     <div class="row">
       <div class="alert alert-danger" role="alert">
-        {{zm}}
+        {{info}}
+      </div>
+    </div>
+    <div class="row">
+      <div class="alert alert-primary" role="alert">
+        {{data}}
+      </div>
+    </div>
+    <div class="row">
+      <div class="alert alert-success" role="alert">
+        {% for link in links %}
+          <a href="{{ link[2] }}">{{ link[1] }}</a><br>
+        {% endfor %}
       </div>
     </div>
   </div>
@@ -14,5 +29,7 @@
 {% block scripts %}
 {{ super() }}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script type="text/javascript">var page = {{ page }}</script>
 <script src="static/progress_bar.js"></script>
 {% endblock %}
+
