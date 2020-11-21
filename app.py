@@ -50,8 +50,8 @@ def start():
 @app.route('/setup')
 def setup():
     base = Database()
-    base.create_db(getenv('SQL_DROP_OFFER'))
-    base.create_db(getenv('SQL_DROP_XLSX'))
+    #base.create_db(getenv('SQL_DROP_OFFER'))
+    #base.create_db(getenv('SQL_DROP_XLSX'))
     base.create_db(getenv('SQL_OFFER'))
     base.create_db(getenv('SQL_XLSX'))
     return render_template('index.html', info = "create tables")
