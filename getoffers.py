@@ -23,5 +23,5 @@ class GetOffers:
                 details = sub_offer.find(id='textContent').get_text().strip()
             except:
                 details = "no details"
-            base = Database(getenv('DB_NAME'))
-            base.insert(None, title, link, details)
+            base = Database()
+            base.insert(title, link, details)

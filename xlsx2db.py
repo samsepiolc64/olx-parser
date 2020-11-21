@@ -11,5 +11,5 @@ class Xlsx2Db:
 
     def xlsx2db(self, data):
         for i in data:
-            base = Database(getenv('DB_NAME'))
-            base.insert_xlsx(None, i[0])
+            base = Database()
+            base.insert_xlsx(i[0])

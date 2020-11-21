@@ -49,7 +49,7 @@ def start():
 
 @app.route('/setup')
 def setup():
-    base = Database(getenv('DB_NAME'))
+    base = Database()
     base.create_db(getenv('SQL_DROP_OFFER'))
     base.create_db(getenv('SQL_DROP_XLSX'))
     base.create_db(getenv('SQL_OFFER'))
@@ -65,13 +65,13 @@ def add():
 
 @app.route('/list/<search>')
 def index(search):
-    base = Database(getenv('DB_NAME'))
+    base = Database()
     links = base.fetch_link(title = search)
     return render_template('index.html', zm = list(links))
 
 @app.route('/search')
 def search():
-    base = Database(getenv('DB_NAME'))
+    base = Database()
     links = base.fetch_search()
     return render_template('index.html', links = links)
 

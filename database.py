@@ -1,27 +1,29 @@
-import sqlite3
+import psycopg2
+from os import getenv
+
 
 class Database:
-    def __init__(self,  name):
-        self.db = sqlite3.connect(name)
+    def __init__(self):
+        self.db = psycopg2.connect(dbname=getenv('DB_NAME'), port=getenv('DB_PORT'), user=getenv('DB_USER'), password=getenv('DB_PASS'), host=getenv('DB_HOST'))
         self.cursor = self.db.cursor()
 
     def __del__ (self):
         self.db.close()
 
     def create_db(self, sql: str):
-        try:
+        #try:
             self.cursor.execute(sql)
             self.db.commit()
-        except:
-            return "table exists"
+        #except:
+        #    return "table exists"
 
 
     def insert(self, *values):
-        self.cursor.execute(f"INSERT INTO offers VALUES ({','.join(['?' for _ in values])})", values)
+        self.cursor.execute("""INSERT INTO offers (title, link, details) VALUES (%s, %s, %s)""", values)
         self.db.commit()
 
     def insert_xlsx(self, *values):
-        self.cursor.execute(f"INSERT INTO xlsx VALUES ({','.join(['?' for _ in values])})", values)
+        self.cursor.execute(f"INSERT INTO xlsx (phrase) VALUES (%s)", values)
         self.db.commit()
 
     def fetch_link(self, **conditions):
