@@ -11,11 +11,11 @@ class Database:
         self.db.close()
 
     def create_db(self, sql: str):
-        #try:
+        try:
             self.cursor.execute(sql)
             self.db.commit()
-        #except:
-        #    return "table exists"
+        except:
+            return "table exists"
 
 
     def insert(self, *values):
