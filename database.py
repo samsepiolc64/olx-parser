@@ -23,7 +23,7 @@ class Database:
         self.db.commit()
 
     def insert_xlsx(self, *values):
-        self.cursor.execute(f"INSERT INTO xlsx (phrase) VALUES (%s)", values)
+        self.cursor.execute("""INSERT INTO xlsx (phrase) VALUES (%s)""", values)
         self.db.commit()
 
     def fetch_link(self, **conditions):
@@ -34,10 +34,14 @@ class Database:
 
     def fetch_search(self):
         try:
-            xlsxPhrases = self.cursor.execute('''SELECT phrase FROM xlsx''').fetchall()
+            xlsxCursor = self.db.cursor()
+            xlsxCursor.execute("SELECT phrase FROM xlsx")
+            xlsxPhrases = xlsxCursor.fetchall()
             listResult = [x[0] for x in xlsxPhrases]
             listResult = ['%'+s+'%' for s in listResult]
-            result = self.cursor.execute(f"SELECT * FROM offers WHERE details LIKE {' OR title LIKE '.join(['?' for _ in listResult])}", listResult)
+            phraseCursor = self.db.cursor()
+            phraseCursor.execute(f"SELECT * FROM offers WHERE details LIKE {' OR title LIKE '.join(['%s' for _ in listResult])}", listResult)
+            result = phraseCursor.fetchall()
             self.db.commit()
             return list(result)
         except:
