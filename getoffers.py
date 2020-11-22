@@ -7,7 +7,7 @@ load_dotenv()
 class GetOffers:
     def __init__(self, url):
         pages = bytes()
-        for i in range(1,5):
+        for i in range(1,2):
             page = get(f'{url}?page={i}')
             pages = pages + page.content
         bs = BeautifulSoup(pages, 'html.parser')
