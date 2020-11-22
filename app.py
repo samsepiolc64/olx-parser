@@ -52,7 +52,7 @@ def setup():
 @app.route('/add')
 def add():
     for page in range(1, 2):
-        offers = GetOffers(getenv('URL'))
+        offers = GetOffers(getenv('URL'), page)
         offers.get_offers()
     return render_template('index.html', info = "add data")
 
