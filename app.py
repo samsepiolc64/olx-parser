@@ -11,16 +11,7 @@ from flask_nav import Nav
 from flask_nav.elements import Navbar, Subgroup, View
 import pandas as pd
 from dotenv import load_dotenv
-
-# from rq import Queue
-# from worker import conn
-#
-# from utils import count_words_at_url
-#
-# q = Queue(connection=conn)
-#
-# result = q.enqueue(count_words_at_url, 'http://heroku.com')
-
+from model import RegForm
 
 load_dotenv()
 app = Flask(__name__)
@@ -52,16 +43,17 @@ def start():
 @app.route('/setup')
 def setup():
     base = Database()
-    base.create_db(getenv('SQL_DROP_OFFER'))
-    base.create_db(getenv('SQL_DROP_XLSX'))
+    #base.create_db(getenv('SQL_DROP_OFFER'))
+    #base.create_db(getenv('SQL_DROP_XLSX'))
     base.create_db(getenv('SQL_OFFER'))
     base.create_db(getenv('SQL_XLSX'))
     return render_template('index.html', info = "create tables")
 
 @app.route('/add')
 def add():
-    offers = GetOffers(getenv('URL'))
-    offers.get_offers()
+    for page in range(1, 2):
+        offers = GetOffers(getenv('URL'))
+        offers.get_offers()
     return render_template('index.html', info = "add data")
 
 @app.route('/list/<search>')

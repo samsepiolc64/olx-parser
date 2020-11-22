@@ -5,12 +5,9 @@ from dotenv import load_dotenv
 load_dotenv()
 
 class GetOffers:
-    def __init__(self, url):
-        pages = bytes()
-        for i in range(1,2):
-            page = get(f'{url}?page={i}')
-            pages = pages + page.content
-        bs = BeautifulSoup(pages, 'html.parser')
+    def __init__(self, url, page):
+        page = get(f'{url}?page={page}')
+        bs = BeautifulSoup(page.content, 'html.parser')
         self.bs = bs
 
     def get_offers(self):
