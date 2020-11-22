@@ -12,6 +12,16 @@ from flask_nav.elements import Navbar, Subgroup, View
 import pandas as pd
 from dotenv import load_dotenv
 
+# from rq import Queue
+# from worker import conn
+#
+# from utils import count_words_at_url
+#
+# q = Queue(connection=conn)
+#
+# result = q.enqueue(count_words_at_url, 'http://heroku.com')
+
+
 load_dotenv()
 app = Flask(__name__)
 Bootstrap(app)
