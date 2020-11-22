@@ -11,7 +11,6 @@ from flask_nav import Nav
 from flask_nav.elements import Navbar, Subgroup, View
 import pandas as pd
 from dotenv import load_dotenv
-from model import RegForm
 
 load_dotenv()
 app = Flask(__name__)
