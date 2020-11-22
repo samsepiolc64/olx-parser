@@ -11,7 +11,7 @@ from flask_nav import Nav
 from flask_nav.elements import Navbar, Subgroup, View
 import pandas as pd
 from dotenv import load_dotenv
-from model import RegForm
+import time
 
 load_dotenv()
 app = Flask(__name__)
@@ -54,6 +54,7 @@ def add():
     for page in range(1, 2):
         offers = GetOffers(getenv('URL'), page)
         offers.get_offers()
+        time.sleep(33)
     return render_template('index.html', info = "add data")
 
 @app.route('/list/<search>')
