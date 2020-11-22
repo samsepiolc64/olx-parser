@@ -5,29 +5,22 @@ from getoffers import GetOffers
 from xlsx2db import Xlsx2Db
 from sys import argv
 from os import getenv
-
 from flask_wtf import FlaskForm
-#from wtforms import FileField
 from flask_wtf.file import FileField, FileRequired
-
 from flask_nav import Nav
 from flask_nav.elements import Navbar, Subgroup, View
-
-
-
 import pandas as pd
-#import csv
 from dotenv import load_dotenv
-load_dotenv()
+from model import RegForm
 
+load_dotenv()
 app = Flask(__name__)
 Bootstrap(app)
 nav = Nav(app)
-
 app.config['SECRET_KEY'] = getenv('SECRET_KEY')
 
 class UploadForm(FlaskForm):
-    xlsxfile = FileField('xlsxfile', validators=[FileRequired()])
+    xlsxfile = FileField('', validators=[FileRequired()])
 
 @nav.navigation('mysite_navbar')
 def create_navbar():
@@ -50,17 +43,16 @@ def start():
 @app.route('/setup')
 def setup():
     base = Database()
-    #base.create_db(getenv('SQL_DROP_OFFER'))
-    #base.create_db(getenv('SQL_DROP_XLSX'))
+    base.create_db(getenv('SQL_DROP_OFFER'))
+    base.create_db(getenv('SQL_DROP_XLSX'))
     base.create_db(getenv('SQL_OFFER'))
     base.create_db(getenv('SQL_XLSX'))
     return render_template('index.html', info = "create tables")
 
 @app.route('/add')
 def add():
-    for page in range(1, 2):
-        offers = GetOffers(getenv('URL'), page)
-        offers.get_offers()
+    offers = GetOffers(getenv('URL'))
+    offers.get_offers()
     return render_template('index.html', info = "add data")
 
 @app.route('/list/<search>')
@@ -89,7 +81,7 @@ def phrases():
         data = pd.read_excel(user_csv, index_col=None, header=None).values
         xlsx = Xlsx2Db()
         xlsx.xlsx2db(data)
-        return render_template('index.html', data=data)
+        return render_template('index.html', data = data, show = True)
 
 def main():
     if len(argv) > 1 and argv[1] == 'setup':

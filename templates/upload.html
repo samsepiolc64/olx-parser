@@ -5,12 +5,15 @@
 {% endblock %}
 {% block content %}
 <div class="container">
-    <form class="" action="phrases" method="POST">
-        <dl>
+    <h3>Add tags file</h3>
+    <hr>
+    <form class="form form-horizontal" action="phrases" method="POST">
+        <div class="form-group">
             {{ form.csrf_token }}
-            {{ wtf.form_field(form.xlsxfile) }}
+            <!--{{ wtf.form_field(form.xlsxfile) }}-->
+            {{ wtf.quick_form(form) }}
             <input class="btn btn-primary" type="submit" name="" value="Submit">
-        </dl>
+        </div>
     </form>
 </div>
 {% endblock %}

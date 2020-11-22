@@ -4,19 +4,30 @@
 {% endblock %}
 {% block content %}
   <div class="container">
+    {% if page %}
     <div class="progress">
       <div id="progressBar" class="progress-bar" role="progressbar" style="wdith: 0%" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100">0%</div>
     </div>
+    {% endif %}
+    {% if info %}
+    <h3>Info</h3>
+    <hr>
     <div class="row">
       <div class="alert alert-danger" role="alert">
         {{info}}
       </div>
     </div>
+    {% endif %}
+    {% if show %}
     <div class="row">
-      <div class="alert alert-primary" role="alert">
+      <div class="alert alert-secondary" role="alert">
         {{data}}
       </div>
     </div>
+    {% endif %}
+    {% if links %}
+    <h3>Links...</h3>
+    <hr>
     <div class="row">
       <div class="alert alert-success" role="alert">
         {% for link in links %}
@@ -24,6 +35,7 @@
         {% endfor %}
       </div>
     </div>
+    {% endif %}
   </div>
 {% endblock %}
 {% block scripts %}
