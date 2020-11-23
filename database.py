@@ -40,9 +40,33 @@ class Database:
             listResult = [x[0] for x in xlsxPhrases]
             listResult = ['%'+s+'%' for s in listResult]
             phraseCursor = self.db.cursor()
-            phraseCursor.execute(f"SELECT * FROM offers WHERE details LIKE {' OR title LIKE '.join(['%s' for _ in listResult])}", listResult)
+            phraseCursor.execute(f"SELECT * FROM offers WHERE details LIKE {' OR details LIKE '.join(['%s' for _ in listResult])}", listResult)
             result = phraseCursor.fetchall()
             self.db.commit()
             return list(result)
+        except:
+            return []
+
+
+
+    def fetch_searching(self):
+        try:
+            phraseCursor = self.db.cursor()
+            phraseCursor.execute("SELECT * FROM offers")
+            result = phraseCursor.fetchall()
+            self.db.commit()
+            return list(result)
+        except:
+            return []
+
+
+    def fetch_xlsx(self):
+        try:
+            xlsxCursor = self.db.cursor()
+            xlsxCursor.execute("SELECT phrase FROM xlsx")
+            xlsxPhrases = xlsxCursor.fetchall()
+            listResult = [x[0] for x in xlsxPhrases]
+            self.db.commit()
+            return list(listResult)
         except:
             return []

@@ -26,6 +26,7 @@ class UploadForm(FlaskForm):
 def create_navbar():
     start_view = View('Start', 'start')
     search_view = View('Show links', 'search')
+    searching_view = View('Show links fast', 'searching')
     upload_view = View('Upload Excel', 'upload')
     add_data_view = View('Add pages', 'add')
     setup_view = View('Clear and create database', 'setup')
@@ -34,7 +35,7 @@ def create_navbar():
                 add_data_view,
                 setup_view
              )
-    return Navbar('OLX Parser', start_view, admin_view, search_view)
+    return Navbar('OLX Parser', start_view, admin_view, search_view, searching_view)
 
 @app.route('/')
 def start():
@@ -43,8 +44,8 @@ def start():
 @app.route('/setup')
 def setup():
     base = Database()
-    #base.create_db(getenv('SQL_DROP_OFFER'))
-    #base.create_db(getenv('SQL_DROP_XLSX'))
+    base.create_db(getenv('SQL_DROP_OFFER'))
+    base.create_db(getenv('SQL_DROP_XLSX'))
     base.create_db(getenv('SQL_OFFER'))
     base.create_db(getenv('SQL_XLSX'))
     return render_template('index.html', info = "create tables")
@@ -54,7 +55,7 @@ def add():
     for page in range(1, 2):
         offers = GetOffers(getenv('URL'), page)
         offers.get_offers()
-        time.sleep(33)
+        #time.sleep(33)
     return render_template('index.html', info = "add data")
 
 @app.route('/list/<search>')
@@ -66,8 +67,17 @@ def index(search):
 @app.route('/search')
 def search():
     base = Database()
+    links = base.fetch_searching()
+    return render_template('index.html', links = links)
+
+
+@app.route('/searching')
+def searching():
+    base = Database()
     links = base.fetch_search()
     return render_template('index.html', links = links)
+
+
 
 @app.route('/upload', methods = ['GET', 'POST'])
 def upload():
