@@ -51,7 +51,7 @@ def setup():
 
 @app.route('/add')
 def add():
-    for page in range(1, 5):
+    for page in range(1, 3):
         offers = GetOffers(getenv('URL'), page)
         offers.get_offers()
     return render_template('index.html', info = "add data")
