@@ -11,7 +11,6 @@ from flask_nav import Nav
 from flask_nav.elements import Navbar, Subgroup, View
 import pandas as pd
 from dotenv import load_dotenv
-import time
 
 load_dotenv()
 app = Flask(__name__)
@@ -52,10 +51,9 @@ def setup():
 
 @app.route('/add')
 def add():
-    for page in range(1, 2):
+    for page in range(1, 5):
         offers = GetOffers(getenv('URL'), page)
         offers.get_offers()
-        #time.sleep(33)
     return render_template('index.html', info = "add data")
 
 @app.route('/list/<search>')
@@ -77,8 +75,6 @@ def searching():
     links = base.fetch_search()
     return render_template('index.html', links = links)
 
-
-
 @app.route('/upload', methods = ['GET', 'POST'])
 def upload():
     form = UploadForm()
@@ -95,13 +91,7 @@ def phrases():
         xlsx.xlsx2db(data)
         return render_template('index.html', data = data, show = True)
 
-def main():
-    if len(argv) > 1 and argv[1] == 'setup':
-        setup()
-    if len(argv) > 1 and argv[1] == 'list':
-        index(search = argv[2])
-    if len(argv) > 1 and argv[1] == 'add':
-        add()
+
 
 if __name__ == "__main__":
     app.run(debug=True)
