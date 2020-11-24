@@ -60,7 +60,7 @@ def setup():
 @app.route('/add')
 def add():
     processes = []
-    for page in range(1,25):
+    for page in range(1,10):
         p = Process(target=multi, args=(page,))
         processes.append(p)
         p.start()
