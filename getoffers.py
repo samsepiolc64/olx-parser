@@ -29,5 +29,6 @@ class GetOffers:
                 if (details.find(x) > 0) or (title.find(x) > 0):
                     i = True
             if i:
+                pass
                 base = Database()
                 base.insert(title, link, details)

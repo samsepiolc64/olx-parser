@@ -3,7 +3,6 @@ from flask_bootstrap import Bootstrap
 from database import Database
 from getoffers import GetOffers
 from xlsx2db import Xlsx2Db
-from sys import argv
 from os import getenv
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileField, FileRequired
@@ -11,6 +10,8 @@ from flask_nav import Nav
 from flask_nav.elements import Navbar, Subgroup, View
 import pandas as pd
 from dotenv import load_dotenv
+
+from multiprocessing import Process
 
 load_dotenv()
 app = Flask(__name__)
@@ -36,6 +37,13 @@ def create_navbar():
              )
     return Navbar('OLX Parser', start_view, admin_view, search_view, searching_view)
 
+
+def multi(page):
+    print(page)
+    offers = GetOffers(getenv('URL'), page)
+    offers.get_offers()
+
+
 @app.route('/')
 def start():
     return render_template('index.html', page = "100")
@@ -51,9 +59,11 @@ def setup():
 
 @app.route('/add')
 def add():
-    for page in range(1, 3):
-        offers = GetOffers(getenv('URL'), page)
-        offers.get_offers()
+    processes = []
+    for page in range(1,6):
+        p = Process(target=multi, args=(page,))
+        processes.append(p)
+        p.start()
     return render_template('index.html', info = "add data")
 
 @app.route('/list/<search>')
