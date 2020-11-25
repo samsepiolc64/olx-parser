@@ -12,8 +12,10 @@ class GetOffers:
 
     def get_offers(self):
         base = Database()
-        links = base.fetch_xlsx()
+        tags = base.fetch_xlsx()
+
         for offer in self.bs.find_all('div', class_='offer-wrapper'):
+            okTags = []
             offer_content = offer.find('td', class_='title-cell')
             title = offer_content.find('strong').get_text().strip()
             link = offer_content.find('a', class_='link')['href']
@@ -24,11 +26,13 @@ class GetOffers:
                 details = sub_offer.find(id='textContent').get_text().strip()
             except:
                 details = "no details"
-            i = False
-            for x in links:
-                if (details.find(x) > 0) or (title.find(x) > 0):
-                    i = True
-            if i:
-                pass
+            tagFlag = False
+            for tag in tags:
+                if (details.find(tag) > 0) or (title.find(tag) > 0):
+                    tagFlag = True
+                    okTags.append(tag)
+
+            if tagFlag:
+                print(okTags)
                 base = Database()
-                base.insert(title, link, details)
+                base.insert(title, link, details, okTags)

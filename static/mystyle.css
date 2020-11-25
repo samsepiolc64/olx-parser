@@ -1,0 +1,9 @@
+.task
+{
+    display: block;
+    text-align: left;
+    margin:5px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}

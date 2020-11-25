@@ -2,6 +2,11 @@
 {% block title %}
     Index
 {% endblock %}
+{% block styles %}
+{{super()}}
+<link rel="stylesheet"
+      href="{{url_for('.static', filename='mystyle.css')}}">
+{% endblock %}
 {% block content %}
   <div class="container">
     {% if page %}
@@ -29,11 +34,11 @@
     <h3>Links...</h3>
     <hr>
     <div class="row">
-      <div class="alert alert-success" role="alert">
         {% for link in links %}
-          <a href="{{ link[2] }}">{{ link[1] }}</a><br>
+          <div class="col">
+            <a class="task btn btn-primary btn-lg btn-bloc " href="{{ link[2] }}"><span class="badge badge-primary badge-pill">{{ link[4][0][0] }}</span> <span>{{ link[1] }}</span></a>
+          </div>
         {% endfor %}
-      </div>
     </div>
     {% endif %}
   </div>
@@ -42,6 +47,9 @@
 {{ super() }}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script type="text/javascript">var page = {{ page }}</script>
-<script src="static/progress_bar.js"></script>
+<script src="{{url_for('.static', filename='progress_bar.js')}}"></script>
 {% endblock %}
+
+
+
 

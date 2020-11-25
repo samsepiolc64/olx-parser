@@ -1,7 +1,6 @@
 import psycopg2
 from os import getenv
 
-
 class Database:
     def __init__(self):
         self.db = psycopg2.connect(dbname=getenv('DB_NAME'), port=getenv('DB_PORT'), user=getenv('DB_USER'), password=getenv('DB_PASS'), host=getenv('DB_HOST'))
@@ -14,25 +13,19 @@ class Database:
         try:
             self.cursor.execute(sql)
             self.db.commit()
+            return "drop old and create new tables"
         except:
             return "table exists"
 
-
     def insert(self, *values):
-        self.cursor.execute("""INSERT INTO offers (title, link, details) VALUES (%s, %s, %s)""", values)
+        self.cursor.execute("""INSERT INTO offers (title, link, details, oktags) VALUES (%s, %s, %s, ARRAY [%s])""", values)
         self.db.commit()
 
     def insert_xlsx(self, *values):
         self.cursor.execute("""INSERT INTO xlsx (phrase) VALUES (%s)""", values)
         self.db.commit()
 
-    def fetch_link(self, **conditions):
-        values = list(conditions.values())[0]
-        result = self.cursor.execute('''SELECT link FROM offers WHERE title LIKE ?''', [f"%{values}%"])
-        self.db.commit()
-        return result
-
-    def fetch_search(self):
+    def fetch_searchold(self):
         try:
             xlsxCursor = self.db.cursor()
             xlsxCursor.execute("SELECT phrase FROM xlsx")
@@ -47,9 +40,7 @@ class Database:
         except:
             return []
 
-
-
-    def fetch_searching(self):
+    def fetch_search(self):
         try:
             phraseCursor = self.db.cursor()
             phraseCursor.execute("SELECT * FROM offers")
@@ -57,8 +48,7 @@ class Database:
             self.db.commit()
             return list(result)
         except:
-            return []
-
+            return "error"
 
     def fetch_xlsx(self):
         try:
@@ -69,4 +59,4 @@ class Database:
             self.db.commit()
             return list(listResult)
         except:
-            return []
+            return "error"
