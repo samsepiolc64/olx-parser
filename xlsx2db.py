@@ -12,4 +12,4 @@ class Xlsx2Db:
     def xlsx2db(self, data):
         for i in data:
             base = Database()
-            base.insert_xlsx(i[0])
+            base.insert_xlsx(i[0],i[1])

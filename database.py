@@ -18,11 +18,11 @@ class Database:
             return "table exists"
 
     def insert(self, *values):
-        self.cursor.execute("""INSERT INTO offers (title, link, details, oktags) VALUES (%s, %s, %s, ARRAY [%s])""", values)
+        self.cursor.execute("""INSERT INTO offers (title, link, details, oktags, antytags) VALUES (%s, %s, %s, ARRAY [%s], ARRAY [%s])""", values)
         self.db.commit()
 
     def insert_xlsx(self, *values):
-        self.cursor.execute("""INSERT INTO xlsx (phrase) VALUES (%s)""", values)
+        self.cursor.execute("""INSERT INTO xlsx (phrase, antyphrase) VALUES (%s,%s)""", values)
         self.db.commit()
 
     def fetch_searchold(self):
@@ -53,10 +53,11 @@ class Database:
     def fetch_xlsx(self):
         try:
             xlsxCursor = self.db.cursor()
-            xlsxCursor.execute("SELECT phrase FROM xlsx")
+            xlsxCursor.execute("SELECT phrase, antyphrase FROM xlsx")
             xlsxPhrases = xlsxCursor.fetchall()
-            listResult = [x[0] for x in xlsxPhrases]
+            phrases = [x[0] for x in xlsxPhrases]
+            antyPhrases = [x[1] for x in xlsxPhrases]
             self.db.commit()
-            return list(listResult)
+            return [list(phrases), list(antyPhrases)]
         except:
             return "error"

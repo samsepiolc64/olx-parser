@@ -7,6 +7,19 @@
     white-space: nowrap;
 }
 
+
+.okbadge {
+    color: #ffffff !important;
+    background-color: #00c300 !important;
+}
+
+
+.antybadge {
+    color: #ffffff !important;
+    background-color: #ff0000 !important;
+}
+
+
 .file {
     position: relative;
     display: block;

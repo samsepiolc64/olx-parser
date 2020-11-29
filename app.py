@@ -86,7 +86,7 @@ def upload():
 def phrases():
     if request.method == 'POST':
         user_csv = request.form['xlsxfile']
-        data = pd.read_excel(user_csv, index_col=None, header=None).values
+        data = pd.read_excel(user_csv, index_col=None, header=None, usecols="A,C").values
         xlsx = Xlsx2Db()
         xlsx.xlsx2db(data)
         return render_template('index.html', info = "add new tags", data = data, show = True)
