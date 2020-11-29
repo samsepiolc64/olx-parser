@@ -13,7 +13,6 @@ class GetOffers:
     def get_offers(self):
         base = Database()
         tags = base.fetch_xlsx()
-
         for offer in self.bs.find_all('div', class_='offer-wrapper'):
             okTags = []
             offer_content = offer.find('td', class_='title-cell')
@@ -31,7 +30,6 @@ class GetOffers:
                 if (details.find(tag) > 0) or (title.find(tag) > 0):
                     tagFlag = True
                     okTags.append(tag)
-
             if tagFlag:
                 print(okTags)
                 base = Database()
