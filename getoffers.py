@@ -13,6 +13,7 @@ class GetOffers:
     def get_offers(self):
         base = Database()
         tags = base.fetch_xlsx()
+        iter_pages = 0
         for offer in self.bs.find_all('div', class_='offer-wrapper'):
             okTags = []
             antyTags = []
@@ -26,22 +27,26 @@ class GetOffers:
                 details = sub_offer.find(id='textContent').get_text().strip()
             except:
                 details = "no details"
+
+
+            iter_pages += 1
+
             tagFlag = False
+            antyTagFlag = False
             for tag in tags[0]:
                 if details.find(tag) > 0 or title.find(tag) > 0:
                     tagFlag = True
                     okTags.append(tag)
-            antyTagFlag = False
             for tag in tags[1]:
                 if details.find(tag) > 0 or title.find(tag) > 0:
                     antyTagFlag = True
                     antyTags.append(tag)
             if not okTags:
-                okTagsFlag = False
                 okTags.append('empty')
             if not antyTags:
-                antyTagsFlag = False
                 antyTags.append('empty')
-            if tagFlag or antyTagFlag and (okTagsFlag and antyTagsFlag):
+            if tagFlag or (tagFlag and antyTagFlag):
                 base = Database()
-                base.insert(title, link, details, okTags, antyTags)
+                if base.check_rec_not_exist(link):
+                    base.insert(title, link, details, okTags, antyTags)
+        print(iter_pages)

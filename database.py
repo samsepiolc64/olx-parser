@@ -61,3 +61,11 @@ class Database:
             return [list(phrases), list(antyPhrases)]
         except:
             return "error"
+
+    def check_rec_not_exist(self, *link):
+        linkCursor = self.db.cursor()
+        linkCursor.execute("SELECT COUNT(link) FROM offers WHERE link = %s", link)
+        result = linkCursor.fetchall()
+        self.db.commit()
+        if result[0][0] == 0:
+            return True

@@ -33,10 +33,14 @@
           <div class="col">
             <a class="task btn btn-primary btn-lg btn-bloc" href="{{ link[2] }}">
               {% if link[4][0][0]!="empty" %}
-              <span class="badge badge-primary badge-pill okbadge">{{ link[4][0][0] }}</span>
+                {% for tag in link[4][0] %}
+                  <span class="badge badge-primary badge-pill okbadge">{{ tag }} </span>
+                {% endfor %}
               {% endif %}
               {% if link[5][0][0]!="empty" %}
-              <span class="badge badge-success badge-pill antybadge">{{ link[5][0][0] }}</span>
+                {% for tag in link[5][0] %}
+                  <span class="badge badge-success badge-pill antybadge">{{ tag }} </span>
+                {% endfor %}
               {% endif %}
               <span>{{ link[1] }}</span>
             </a>

@@ -10,13 +10,21 @@ from xlsx2db import Xlsx2Db
 from os import getenv
 from dotenv import load_dotenv
 from multiprocessing import Process
+
+from timeloop import Timeloop
+from datetime import timedelta
+
+import time
 import pandas as pd
+
 
 load_dotenv()
 app = Flask(__name__)
 Bootstrap(app)
 nav = Nav(app)
 app.config['SECRET_KEY'] = getenv('SECRET_KEY')
+tl = Timeloop()
+
 
 class UploadForm(FlaskForm):
     xlsxfile = FileField('', validators=[FileRequired()])
@@ -24,22 +32,35 @@ class UploadForm(FlaskForm):
 @nav.navigation('mysite_navbar')
 def create_navbar():
     start_view = View('Start', 'start')
-    searchold_view = View('Show links old', 'searchold')
+    # searchold_view = View('Show links old', 'searchold')
     search_view = View('Show links new', 'search')
     upload_view = View('Upload Excel', 'upload')
     add_data_view = View('Add pages', 'add')
+    stop_add_data_view = View('Stop add pages', 'stopadd')
     setup_view = View('Clear and create database', 'setup')
     admin_view = Subgroup('Create data',
                 upload_view,
                 add_data_view,
+                stop_add_data_view,
                 setup_view
              )
-    return Navbar('OLX Parser', start_view, admin_view, searchold_view, search_view)
+    return Navbar('OLX Parser', start_view, admin_view, add_data_view, stop_add_data_view, search_view)
 
 def multi(page):
     print(page)
     offers = GetOffers(getenv('URL'), page)
     offers.get_offers()
+
+def loop_searching():
+    print('kolejna petla')
+    processes = []
+    try:
+        for page in range(1,10):
+            p = Process(target=multi, args=(page,))
+            processes.append(p)
+            p.start()
+    except:
+        pass
 
 @app.route('/')
 def start():
@@ -56,12 +77,17 @@ def setup():
 
 @app.route('/add')
 def add():
-    processes = []
-    for page in range(1,9):
-        p = Process(target=multi, args=(page,))
-        processes.append(p)
-        p.start()
+    loop_searching()
+    @tl.job(interval=timedelta(seconds=360))
+    def sample_job_every_xxxs():
+        loop_searching()
+    tl.start()
     return render_template('index.html', info = "parse new data")
+
+@app.route('/stopadd')
+def stopadd():
+    tl.stop()
+    return render_template('index.html', info="add stop")
 
 @app.route('/searchold')
 def searchold():
@@ -77,6 +103,9 @@ def search():
 
 @app.route('/upload', methods = ['GET', 'POST'])
 def upload():
+    # base = Database()
+    # base.create_db(getenv('SQL_DROP_XLSX'))
+    # base.create_db(getenv('SQL_XLSX'))
     form = UploadForm()
     if form.validate_on_submit():
         return 'Form Successfully Submitted!'
