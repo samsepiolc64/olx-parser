@@ -28,18 +28,18 @@
     {% if links %}
     <h3>Links...</h3>
     <hr>
-    <div class="row">
+    <div class="container">
         {% for link in links %}
           <div class="col">
-            <a class="task btn btn-primary btn-lg btn-bloc" href="{{ link[2] }}">
+            <a class="btn btn-light mb-1 btn-lg btn-block task" href="{{ link[2] }}">
               {% if link[4][0][0]!="empty" %}
                 {% for tag in link[4][0] %}
-                  <span class="badge badge-primary badge-pill okbadge">{{ tag }} </span>
+                  <span class="badge badge-info badge-pill">{{ tag }} </span>
                 {% endfor %}
               {% endif %}
               {% if link[5][0][0]!="empty" %}
                 {% for tag in link[5][0] %}
-                  <span class="badge badge-success badge-pill antybadge">{{ tag }} </span>
+                  <span class="badge badge-danger badge-pill">{{ tag }} </span>
                 {% endfor %}
               {% endif %}
               <span>{{ link[1] }}</span>
@@ -54,7 +54,3 @@
 {{ super() }}
 <script type="text/javascript">var page = {{ page }}</script>
 {% endblock %}
-
-
-
-

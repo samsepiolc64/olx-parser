@@ -4,26 +4,15 @@
     Upload
 {% endblock %}
 {% block content %}
-<div class="container">
+<div class="container ">
     <h3>Add tags file</h3>
     <hr>
     <form class="" action="phrases" method="POST">
-        <div class="form-group">
-            {{ form.csrf_token }}
-            <label class="file">
-                {{ wtf.form_field(form.xlsxfile, class_="") }}
-                <span class="file-custom"></span>
-            </label>
-
-<!--            {{ wtf.quick_form(form) }}-->
-            <input class="btn btn-lg btn-primary" type="submit" name="" value="Submit">
+        <div class="custom-file text-center">
+                <input type="file" name="xlsxfile" class="custom-file-input mb-4 valid" id="inputGroupFile01" aria-describedby="inputGroupFileAddon01">
+                <label class="custom-file-label center" for="inputGroupFile01">Choose file...</label>
+            <input class="btn btn-lg btn-primary  " type="submit" name="" value="Submit">
         </div>
     </form>
 </div>
 {% endblock %}
-
-
-
-
-<!--  <input type="file" id="file" aria-label="File browser example">-->
-<!--  <span class="file-custom"></span>-->
