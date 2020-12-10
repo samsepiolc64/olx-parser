@@ -25,6 +25,20 @@ class Database:
         self.cursor.execute("""INSERT INTO xlsx (phrase, antyphrase) VALUES (%s,%s)""", values)
         self.db.commit()
 
+    def fetch_tags(self):
+
+
+        xlsxCursor = self.db.cursor()
+        xlsxCursor.execute("SELECT phrase, antyphrase FROM xlsx")
+        xlsxPhrases = xlsxCursor.fetchall()
+        phrases = [x[0] for x in xlsxPhrases]
+        antyPhrases = [x[1] for x in xlsxPhrases]
+        self.db.commit()
+        return [list(phrases), list(antyPhrases)]
+
+
+
+
     def fetch_searchold(self):
         try:
             xlsxCursor = self.db.cursor()

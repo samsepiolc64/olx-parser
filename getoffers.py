@@ -31,21 +31,24 @@ class GetOffers:
 
             iter_pages += 1
 
-            tagFlag = False
-            antyTagFlag = False
+
             for tag in tags[0]:
-                if details.find(tag) > 0 or title.find(tag) > 0:
-                    tagFlag = True
-                    okTags.append(tag)
+                if tag != "NaN":
+                    if details.find(tag)>0 or title.find(tag)>0 or details.find(tag.lower())>0 or title.find(tag.lower())>0 or details.find(tag.upper())>0 or title.find(tag.upper())>0 or details.find(tag.capitalize())>0 or title.find(tag.capitalize())>0:
+                        okTags.append(tag)
+
+
             for tag in tags[1]:
-                if details.find(tag) > 0 or title.find(tag) > 0:
-                    antyTagFlag = True
-                    antyTags.append(tag)
+                if tag != "NaN":
+                    if details.find(tag)>0 or title.find(tag)>0 or details.find(tag.lower())>0 or title.find(tag.lower())>0 or details.find(tag.upper())>0 or title.find(tag.upper())>0 or details.find(tag.capitalize())>0 or title.find(tag.capitalize())>0:
+                        antyTags.append(tag)
+
             if not okTags:
                 okTags.append('empty')
             if not antyTags:
                 antyTags.append('empty')
-            if tagFlag or (tagFlag and antyTagFlag):
+
+            if okTags[0] != "empty":
                 base = Database()
                 if base.check_rec_not_exist(link):
                     base.insert(title, link, details, okTags, antyTags)

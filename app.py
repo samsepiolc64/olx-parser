@@ -41,7 +41,10 @@ def loop_searching(run):
 
 @app.route('/')
 def start():
-    return render_template('index.html', page = "100")
+    base = Database()
+    tags = base.fetch_tags()
+    #print(tags)
+    return render_template('index.html', page = "100", tags = tags)
 
 @app.route('/setup')
 def setup():
@@ -65,7 +68,7 @@ def add():
 def stopadd():
     #loop_searching(run=False)
     tl.stop()
-    return render_template('index.html', info="add stop")
+    return render_template('index.html', info = "add stop")
 
 @app.route('/searchold')
 def searchold():
@@ -83,9 +86,7 @@ def search():
 @app.route('/upload', methods = ['GET', 'POST'])
 def upload():
     # base = Database()
-    # base.create_db(getenv('SQL_DROP_XLSX'))
-    # base.create_db(getenv('SQL_XLSX'))
-
+    # base.create_db(getenv('SQL_DEL_XLSX'))
 
     #
     # form = UploadForm()
@@ -94,8 +95,7 @@ def upload():
     # return render_template('upload.html', form = form)
     #
 
-
-    return render_template('upload.html')
+    return render_template('index.html', upload = True)
 
 @app.route('/phrases', methods = ['GET', 'POST'])
 def phrases():
@@ -104,7 +104,7 @@ def phrases():
         data = pd.read_excel(user_csv, index_col=None, header=None, usecols="A,C").values
         xlsx = Xlsx2Db()
         xlsx.xlsx2db(data)
-        return render_template('index.html', info = "add new tags", data = data, show = True)
+        return render_template('index.html', info = "add new tags")
 
 if __name__ == "__main__":
     app.run(debug=True)
