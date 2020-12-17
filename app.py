@@ -49,7 +49,7 @@ def start():
 @app.route('/setup')
 def setup():
     base = Database()
-    #base.create_db(getenv('SQL_DROP_OFFER'))
+    base.create_db(getenv('SQL_DEL_OFFER'))
     #base.create_db(getenv('SQL_DROP_XLSX'))
     base.create_db(getenv('SQL_OFFER'))
     base.create_db(getenv('SQL_XLSX'))
@@ -76,12 +76,17 @@ def searchold():
     links = base.fetch_searchold()
     return render_template('index.html', links = links)
 
-@app.route('/search')
+@app.route('/search', methods=['GET','POST'])
 def search():
     #tl.stop()
+    check = []
     base = Database()
     links = base.fetch_search()
-    return render_template('index.html', links = links)
+    if request.method == 'POST':
+        check = request.form.getlist('options')
+
+
+    return render_template('index.html', links = links, check = check)
 
 @app.route('/upload', methods = ['GET', 'POST'])
 def upload():

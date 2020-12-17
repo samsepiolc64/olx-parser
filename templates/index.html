@@ -1,84 +1,128 @@
 {% extends "base.html" %}
 {% block content %}
-  <div class="container main">
+<div class="container">
     {% if page %}
-    <div class="container">
-      <div class="row justify-content-between">
-
+    <div class="row justify-content-between">
         <div class="col-sm-12 col-lg mb-5">
-          <h3>Current phrases</h3>
-          <hr>
-          <div class="shadow-lg bg-light p-3 rounded">
-            {% for tag in tags[0] %}
-            {% if tag!="NaN" %}
-              <span class="badge badge-info badge-pill">{{ tag }}</span>
-            {% endif %}
-            {% endfor %}
-          </div>
+            <h3>Current phrases</h3>
+            <hr>
+            <div class="shadow-lg bg-light p-3 rounded">
+                {% for tag in tags[0] %}
+                {% if tag!="NaN" %}
+                <span class="badge badge-info badge-pill">{{ tag }}</span>
+                {% endif %}
+                {% endfor %}
+            </div>
         </div>
-
         <div class="col-1"></div>
-
         <div class="col-sm-12 col-lg mb-5">
-          <h3>Current antyphrases</h3>
-          <hr>
-          <div class="shadow-lg bg-light p-3 rounded">
-            {% for tag in tags[1] %}
-            {% if tag!="NaN" %}
-              <span class="badge badge-danger badge-pill">{{ tag }}</span>
-            {% endif %}
-            {% endfor %}
-          </div>
-        </div>
+            <h3>Current antyphrases</h3>
+            <hr>
+            <div class="shadow-lg bg-light p-3 rounded">
+                {% for tag in tags[1] %}
+                {% if tag!="NaN" %}
+                <span class="badge badge-danger badge-pill">{{ tag }}</span>
+                {% endif %}
+                {% endfor %}
+            </div>
         </div>
     </div>
     {% endif %}
     {% if info %}
-    <h3>Info</h3>
-    <hr>
-    <div class="container">
-    <div class="row">
-      <div class="alert alert-danger" role="alert">
-        {{info}}
-      </div>
-    </div>
+    <div class="">
+        <h3>Info</h3>
+        <hr>
+        <div class="container">
+            <div class="row">
+                <div class="alert alert-danger" role="alert">
+                    {{info}}
+                </div>
+            </div>
+        </div>
     </div>
     {% endif %}
     {% if links %}
-    <h3>Links...</h3>
-    <hr>
-    <div class="container">
+    <div class="">
+        <h3>Links...</h3>
+        <hr>
+        <div class="mb-3">
+            <form method="POST" action="search">
+                <label class="btn btn-info">
+                    <input type="submit" name="options" autocomplete="off" value="phrases" hidden> Phrases
+                </label>
+                <label class="btn btn-danger">
+                    <input type="submit" name="options" autocomplete="off" value="antyphrases" hidden> +Antyphrases
+                </label>
+            </form>
+        </div>
         {% for link in links %}
-          <div class="col-12">
+        {% if check == [] %}
+        <div class="">
             <a class="btn btn-light mb-1 btn-lg btn-block task" href="{{ link[2] }}">
-              {% if link[4][0][0]!="empty" %}
+                {% if link[4][0][0]!="empty" %}
                 {% for tag in link[4][0] %}
-                  <span class="badge badge-info badge-pill">{{ tag }} </span>
+                <span class="badge badge-info badge-pill">{{ tag }} </span>
                 {% endfor %}
-              {% endif %}
-              {% if link[5][0][0]!="empty" %}
+                {% endif %}
+                {% if link[5][0][0]!="empty" %}
                 {% for tag in link[5][0] %}
-                  <span class="badge badge-danger badge-pill">{{ tag }} </span>
+                <span class="badge badge-danger badge-pill">{{ tag }} </span>
                 {% endfor %}
-              {% endif %}
-              <span>{{ link[1] }}</span>
+                {% endif %}
+                <span>{{ link[1] }}</span>
             </a>
-          </div>
+        </div>
+        {% endif %}
+        {% if link[5][0][0]=="empty" and link[4][0][0]!="empty" and check[0] == "phrases" %}
+        <div class="">
+            <a class="btn btn-light mb-1 btn-lg btn-block task" href="{{ link[2] }}">
+                {% if link[4][0][0]!="empty" %}
+                {% for tag in link[4][0] %}
+                <span class="badge badge-info badge-pill">{{ tag }} </span>
+                {% endfor %}
+                {% endif %}
+                {% if link[5][0][0]!="empty" %}
+                {% for tag in link[5][0] %}
+                <span class="badge badge-danger badge-pill">{{ tag }} </span>
+                {% endfor %}
+                {% endif %}
+                <span>{{ link[1] }}</span>
+            </a>
+        </div>
+        {% endif %}
+        {% if link[5][0][0]!="empty" and link[4][0][0]!="empty" and check[0] == "antyphrases" %}
+        <div class="">
+            <a class="btn btn-light mb-1 btn-lg btn-block task" href="{{ link[2] }}">
+                {% if link[4][0][0]!="empty" %}
+                {% for tag in link[4][0] %}
+                <span class="badge badge-info badge-pill">{{ tag }} </span>
+                {% endfor %}
+                {% endif %}
+                {% if link[5][0][0]!="empty" %}
+                {% for tag in link[5][0] %}
+                <span class="badge badge-danger badge-pill">{{ tag }} </span>
+                {% endfor %}
+                {% endif %}
+                <span>{{ link[1] }}</span>
+            </a>
+        </div>
+        {% endif %}
         {% endfor %}
     </div>
     {% endif %}
     {% if upload %}
-      <div class="container ">
+    <div class="">
         <h3>Add tags file</h3>
         <hr>
         <form class="" action="phrases" method="POST">
-          <div class="custom-file text-center">
-            <input type="file" name="xlsxfile" class="custom-file-input mb-4 valid" id="inputGroupFile01" aria-describedby="inputGroupFileAddon01">
-            <label class="custom-file-label center" for="inputGroupFile01">Choose file...</label>
-            <input class="btn btn-lg btn-primary  " type="submit" name="" value="Submit">
-          </div>
+            <div class="custom-file text-center">
+                <input type="file" name="xlsxfile" class="custom-file-input mb-4 valid" id="inputGroupFile01"
+                       aria-describedby="inputGroupFileAddon01">
+                <label class="custom-file-label center" for="inputGroupFile01">Choose file...</label>
+                <input class="btn btn-lg btn-primary  " type="submit" name="" value="Submit">
+            </div>
         </form>
-      </div>
+    </div>
     {% endif %}
 </div>
 {% endblock %}
