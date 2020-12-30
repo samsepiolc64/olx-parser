@@ -14,11 +14,18 @@ from timeloop import Timeloop
 from datetime import timedelta
 import pandas as pd
 
+import multiprocessing
+
+
+
 load_dotenv()
 app = Flask(__name__)
 Bootstrap(app)
 app.config['SECRET_KEY'] = getenv('SECRET_KEY')
 tl = Timeloop()
+
+processes = []
+
 
 # class UploadForm(FlaskForm):
 #     xlsxfile = FileField('', validators=[FileRequired()])
@@ -30,12 +37,31 @@ def multi(page):
 
 def loop_searching(run):
     print('kolejna petla')
-    processes = []
+
+    # global processes
+    # if processes:
+    #     print("killuje procesy")
+    #     for process in processes:
+    #         print(process)
+    #         process.join()
+    #         #process.close()
+    #         process.kill()
+    #         print(process)
+    #     print(processes)
+    #     #processes = []
+
+
     try:
+
+
+
         for page in range(1,10):
             p = Process(target=multi, args=(page,))
             processes.append(p)
             p.start()
+            #p.join()
+            #p.terminate()
+        #print(processes)
     except:
         pass
 
@@ -50,13 +76,15 @@ def start():
 def setup():
     base = Database()
     base.create_db(getenv('SQL_DEL_OFFER'))
-    #base.create_db(getenv('SQL_DROP_XLSX'))
     base.create_db(getenv('SQL_OFFER'))
-    base.create_db(getenv('SQL_XLSX'))
+
+    #base.create_db(getenv('SQL_XLSX'))
+
     return render_template('index.html', info = "drop old and create new tables")
 
 @app.route('/add')
 def add():
+
     loop_searching(run=True)
     @tl.job(interval=timedelta(seconds=300))
     def sample_job_every_xxxs():
@@ -90,16 +118,15 @@ def search():
 
 @app.route('/upload', methods = ['GET', 'POST'])
 def upload():
-    # base = Database()
-    # base.create_db(getenv('SQL_DEL_XLSX'))
-
+    base = Database()
+    base.create_db(getenv('SQL_DEL_XLSX'))
+    base.create_db(getenv('SQL_XLSX'))
     #
     # form = UploadForm()
     # if form.validate_on_submit():
     #     return 'Form Successfully Submitted!'
     # return render_template('upload.html', form = form)
     #
-
     return render_template('index.html', upload = True)
 
 @app.route('/phrases', methods = ['GET', 'POST'])

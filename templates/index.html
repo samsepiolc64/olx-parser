@@ -6,10 +6,10 @@
         <div class="col-sm-12 col-lg mb-5">
             <h3>Current phrases</h3>
             <hr>
-            <div class="shadow-lg bg-light p-3 rounded">
+            <div class="shadow-lg bg-light p-3 h5 rounded">
                 {% for tag in tags[0] %}
                 {% if tag!="NaN" %}
-                <span class="badge badge-info badge-pill">{{ tag }}</span>
+                <span class="btn badge badge-info badge-pill mb-1">{{ tag }}</span>
                 {% endif %}
                 {% endfor %}
             </div>
@@ -18,10 +18,10 @@
         <div class="col-sm-12 col-lg mb-5">
             <h3>Current antyphrases</h3>
             <hr>
-            <div class="shadow-lg bg-light p-3 rounded">
+            <div class="shadow-lg bg-light p-3 h5 rounded">
                 {% for tag in tags[1] %}
                 {% if tag!="NaN" %}
-                <span class="badge badge-danger badge-pill">{{ tag }}</span>
+                <span class="btn badge badge-danger badge-pill mb-1">{{ tag }}</span>
                 {% endif %}
                 {% endfor %}
             </div>

@@ -13,7 +13,9 @@ class GetOffers:
     def get_offers(self):
         base = Database()
         tags = base.fetch_xlsx()
-        print(tags)
+
+        #print(tags)
+
         iter_pages = 0
         for offer in self.bs.find_all('div', class_='offer-wrapper'):
             okTags = []
@@ -35,13 +37,13 @@ class GetOffers:
 
             for tag in tags[0]:
                 if tag != "NaN":
-                    if title.find(tag)>0 or title.find(tag.lower())>0 or title.find(tag.upper())>0 or title.find(tag.capitalize())>0 or details.find(tag)>0 or details.find(tag.lower())>0 or details.find(tag.upper())>0 or details.find(tag.capitalize())>0:
+                    if title.find(tag)!=-1 or title.find(tag.lower())!=-1 or title.find(tag.upper())!=-1 or title.find(tag.capitalize())!=-1 or details.find(tag)!=-1 or details.find(tag.lower())!=-1 or details.find(tag.upper())!=-1 or details.find(tag.capitalize())!=-1:
                         okTags.append(tag)
 
 
             for tag in tags[1]:
                 if tag != "NaN":
-                    if title.find(tag)>0 or title.find(tag.lower())>0 or title.find(tag.upper())>0 or title.find(tag.capitalize())>0 or details.find(tag)>0 or details.find(tag.lower())>0 or details.find(tag.upper())>0 or details.find(tag.capitalize())>0:
+                    if title.find(tag)!=-1 or title.find(tag.lower())!=-1 or title.find(tag.upper())!=-1 or title.find(tag.capitalize())!=-1 or details.find(tag)!=-1 or details.find(tag.lower())!=-1 or details.find(tag.upper())!=-1 or details.find(tag.capitalize())!=-1:
                         antyTags.append(tag)
 
             if not okTags:
