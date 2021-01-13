@@ -72,7 +72,7 @@ def settings():
 @app.route('/settings-init')
 def setinit():
     base = Database()
-    base.create_db(getenv('SQL_DEL_SETTINGS'))
+    #base.create_db(getenv('SQL_DEL_SETTINGS'))
     base.create_db(getenv('SQL_SETTINGS'))
     base.settings_init(getenv('DURATION_SET_INIT'),getenv('PAGES_SET_INIT'))
     return render_template('index.html', info = "settings initioation")
