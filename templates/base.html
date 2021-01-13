@@ -7,7 +7,7 @@ Privateer
 <link rel="stylesheet" href="{{url_for('.static', filename='mystyle.css')}}">
 {% endblock %}
 {% block navbar %}
-<nav class="navbar navbar-expand-lg navbar-light mb-5 sticky-top"  style="background-color: #ec7834;">
+<nav class="navbar navbar-expand-lg navbar-light mb-5 sticky-top"  style="background-color: #c8c8c8;">
   <a class="navbar-brand" href="#">Privateer</a>
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
@@ -18,12 +18,6 @@ Privateer
         <a class="nav-link" href="/">Home <span class="sr-only">(current)</span></a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="/add">Go</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="/stopadd">Stop</a>
-      </li>
-      <li class="nav-item">
         <a class="nav-link" href="/search">Links</a>
       </li>
       <li class="nav-item dropdown">
@@ -31,8 +25,11 @@ Privateer
           Setup
         </a>
         <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-          <a class="dropdown-item" href="/setup">Create/Clear offers</a>
-          <a class="dropdown-item" href="/upload">Upload new XLSX file</a>
+          <a class="nav-link" href="/add">Start</a>
+          <a class="nav-link" href="/stop-add">Stop</a>
+          <a class="nav-link" href="/clear-offers">Create/Clear offers</a>
+          <a class="nav-link" href="/upload">Upload XLSX</a>
+          <a class="nav-link" href="/settings">Settings</a>
         </div>
       </li>
     </ul>

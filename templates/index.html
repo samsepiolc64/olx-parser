@@ -124,6 +124,31 @@
         </form>
     </div>
     {% endif %}
+    {% if settings %}
+    <div class="">
+        <h3>Settings</h3>
+        <hr>
+        <form class="" action="settings-save" method="POST">
+            <div class="form-group">
+                <label for="exampleFormControlInput1">{{ settings[0][1] }}</label>
+
+                <select class="form-control" name="{{ settings[0][0] }}"  id="exampleFormControlSelect1">
+                    <option value="100" {% if settings[0][2]=="100" %} selected {% endif %}>100</option>
+                    <option value="200" {% if settings[0][2]=="200" %} selected {% endif %}>200</option>
+                    <option value="300" {% if settings[0][2]=="300" %} selected {% endif %}>300</option>
+                    <option value="400" {% if settings[0][2]=="400" %} selected {% endif %}>400</option>
+                    <option value="500" {% if settings[0][2]=="500" %} selected {% endif %}>500</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="exampleFormControlInput1">{{ settings[1][1] }}</label>
+                <input type="text" class="form-control" name="{{ settings[1][0] }}" id="exampleFormControlInput1"
+                       value="{{ settings[1][2] }}">
+            </div>
+            <input class="btn btn-lg btn-primary" type="submit" name="" value="Submit">
+        </form>
+    </div>
+    {% endif %}
 </div>
 {% endblock %}
 {% block scripts %}

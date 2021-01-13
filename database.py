@@ -10,12 +10,29 @@ class Database:
         self.db.close()
 
     def create_db(self, sql: str):
+        self.cursor.execute(sql)
+        self.db.commit()
+
+    def settings_init(self, *values):
+        for value in values:
+            print(value.split(":"))
+            self.cursor.execute(f"INSERT INTO settings (setting, value) VALUES (%s, %s)", value.split(":"))
+        self.db.commit()
+
+    def fetch_settings(self):
         try:
-            self.cursor.execute(sql)
+            phraseCursor = self.db.cursor()
+            phraseCursor.execute("SELECT * FROM settings")
+            result = phraseCursor.fetchall()
             self.db.commit()
-            return "drop old and create new tables"
+            return list(result)
         except:
-            return "table exists"
+            return "error"
+
+    def save_settings(self, values):
+        for value in values:
+            self.cursor.execute(f"UPDATE settings SET value = {str(values[value][0])} WHERE id = {int(value)}")
+        self.db.commit()
 
     def insert(self, *values):
         self.cursor.execute("""INSERT INTO offers (title, link, details, oktags, antytags) VALUES (%s, %s, %s, ARRAY [%s], ARRAY [%s])""", values)
@@ -26,8 +43,6 @@ class Database:
         self.db.commit()
 
     def fetch_tags(self):
-
-
         xlsxCursor = self.db.cursor()
         xlsxCursor.execute("SELECT phrase, antyphrase FROM xlsx")
         xlsxPhrases = xlsxCursor.fetchall()
@@ -35,9 +50,6 @@ class Database:
         antyPhrases = [x[1] for x in xlsxPhrases]
         self.db.commit()
         return [list(phrases), list(antyPhrases)]
-
-
-
 
     def fetch_searchold(self):
         try:

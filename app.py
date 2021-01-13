@@ -16,8 +16,6 @@ import pandas as pd
 
 import multiprocessing
 
-
-
 load_dotenv()
 app = Flask(__name__)
 Bootstrap(app)
@@ -25,7 +23,6 @@ app.config['SECRET_KEY'] = getenv('SECRET_KEY')
 tl = Timeloop()
 
 processes = []
-
 
 # class UploadForm(FlaskForm):
 #     xlsxfile = FileField('', validators=[FileRequired()])
@@ -37,7 +34,6 @@ def multi(page):
 
 def loop_searching(run):
     print('kolejna petla')
-
     # global processes
     # if processes:
     #     print("killuje procesy")
@@ -49,12 +45,7 @@ def loop_searching(run):
     #         print(process)
     #     print(processes)
     #     #processes = []
-
-
     try:
-
-
-
         for page in range(1,10):
             p = Process(target=multi, args=(page,))
             processes.append(p)
@@ -72,27 +63,50 @@ def start():
     #print(tags)
     return render_template('index.html', page = "100", tags = tags)
 
-@app.route('/setup')
+@app.route('/settings', methods = ['GET', 'POST'])
+def settings():
+    base = Database()
+    settings = base.fetch_settings()
+    return render_template('index.html', settings = settings)
+
+@app.route('/settings-init')
+def setinit():
+    base = Database()
+    base.create_db(getenv('SQL_DEL_SETTINGS'))
+    base.create_db(getenv('SQL_SETTINGS'))
+    base.settings_init(getenv('DURATION_SET_INIT'),getenv('PAGES_SET_INIT'))
+    return render_template('index.html', info = "settings initioation")
+
+@app.route('/settings-save', methods = ['GET', 'POST'])
+def setsave():
+    base = Database()
+    if request.method == 'POST':
+        data = request.form.to_dict(flat=False)
+        base.save_settings(data)
+        return render_template('index.html', info = "settings save")
+
+@app.route('/clear-offers')
 def setup():
     base = Database()
     base.create_db(getenv('SQL_DEL_OFFER'))
     base.create_db(getenv('SQL_OFFER'))
-
     #base.create_db(getenv('SQL_XLSX'))
-
     return render_template('index.html', info = "drop old and create new tables")
 
 @app.route('/add')
 def add():
+    base = Database()
+    settings = base.fetch_settings()
 
     loop_searching(run=True)
-    @tl.job(interval=timedelta(seconds=300))
+    @tl.job(interval=timedelta(seconds=float(settings[0][2])))
     def sample_job_every_xxxs():
         loop_searching(run=True)
     tl.start()
+
     return render_template('index.html', info = "parse new data")
 
-@app.route('/stopadd')
+@app.route('/stop-add')
 def stopadd():
     #loop_searching(run=False)
     tl.stop()
@@ -112,8 +126,6 @@ def search():
     links = base.fetch_search()
     if request.method == 'POST':
         check = request.form.getlist('options')
-
-
     return render_template('index.html', links = links, check = check)
 
 @app.route('/upload', methods = ['GET', 'POST'])
