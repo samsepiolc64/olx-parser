@@ -29,6 +29,7 @@ class Database:
         except:
             return "error"
 
+
     def save_settings(self, values):
         for value in values:
             self.cursor.execute(f"UPDATE settings SET value = {str(values[value][0])} WHERE id = {int(value)}")

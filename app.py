@@ -77,6 +77,7 @@ def setinit():
     base.settings_init(getenv('DURATION_SET_INIT'),getenv('PAGES_SET_INIT'))
     return render_template('index.html', info = "settings initioation")
 
+
 @app.route('/settings-save', methods = ['GET', 'POST'])
 def setsave():
     base = Database()
