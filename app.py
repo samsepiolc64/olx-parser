@@ -106,8 +106,8 @@ def setsave():
 @app.route('/clear-offers')
 def setup():
     base = Database()
-    #base.create_db(getenv('SQL_DROP_OFFER'))
-    base.create_db(getenv('SQL_DEL_OFFER'))
+    base.create_db(getenv('SQL_DROP_OFFER'))
+    #base.create_db(getenv('SQL_DEL_OFFER'))
     base.create_db(getenv('SQL_OFFER'))
     #base.create_db(getenv('SQL_XLSX'))
     return render_template('index.html', info = "drop old and create new tables")
