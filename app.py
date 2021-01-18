@@ -1,9 +1,7 @@
 from flask import Flask, render_template, request
 from flask_bootstrap import Bootstrap
-
 # from flask_wtf import FlaskForm
 # from flask_wtf.file import FileField, FileRequired
-
 from database import Database
 from getoffers import GetOffers
 from xlsx2db import Xlsx2Db
@@ -13,7 +11,6 @@ from multiprocessing import Process
 from timeloop import Timeloop
 from datetime import timedelta
 import pandas as pd
-
 import multiprocessing
 
 load_dotenv()
@@ -21,18 +18,24 @@ app = Flask(__name__)
 Bootstrap(app)
 app.config['SECRET_KEY'] = getenv('SECRET_KEY')
 tl = Timeloop()
-
 processes = []
 
 # class UploadForm(FlaskForm):
 #     xlsxfile = FileField('', validators=[FileRequired()])
+
+def restart_program():
+    python = sys.executable
+    os.execl(python, python, * sys.argv)
+
+
+
 
 def multi(page):
     print(page)
     offers = GetOffers(getenv('URL'), page)
     offers.get_offers()
 
-def loop_searching(run):
+def loop_searching(pages):
     print('kolejna petla')
     # global processes
     # if processes:
@@ -45,8 +48,10 @@ def loop_searching(run):
     #         print(process)
     #     print(processes)
     #     #processes = []
+    pages = int(pages)
+    print(type(pages))
     try:
-        for page in range(1,10):
+        for page in range(1,int(pages)):
             p = Process(target=multi, args=(page,))
             processes.append(p)
             p.start()
@@ -56,12 +61,21 @@ def loop_searching(run):
     except:
         pass
 
+# ***********************************
+# ***       MAIN route            ***
+# ***********************************
+
 @app.route('/')
 def start():
     base = Database()
     tags = base.fetch_tags()
-    #print(tags)
-    return render_template('index.html', page = "100", tags = tags)
+    count = base.count_row_offers()
+    return render_template('index.html', count = count, tags = tags)
+
+
+# ***********************************
+# ***   SETTINGS operations       ***
+# ***********************************
 
 @app.route('/settings', methods = ['GET', 'POST'])
 def settings():
@@ -77,7 +91,6 @@ def setinit():
     base.settings_init(getenv('DURATION_SET_INIT'),getenv('PAGES_SET_INIT'))
     return render_template('index.html', info = "settings initioation")
 
-
 @app.route('/settings-save', methods = ['GET', 'POST'])
 def setsave():
     base = Database()
@@ -86,9 +99,14 @@ def setsave():
         base.save_settings(data)
         return render_template('index.html', info = "settings save")
 
+# ***********************************
+# ***   OFFERS operations         ***
+# ***********************************
+
 @app.route('/clear-offers')
 def setup():
     base = Database()
+    #base.create_db(getenv('SQL_DROP_OFFER'))
     base.create_db(getenv('SQL_DEL_OFFER'))
     base.create_db(getenv('SQL_OFFER'))
     #base.create_db(getenv('SQL_XLSX'))
@@ -98,26 +116,30 @@ def setup():
 def add():
     base = Database()
     settings = base.fetch_settings()
-
-    loop_searching(run=True)
+    loop_searching(settings[1][2])
     @tl.job(interval=timedelta(seconds=float(settings[0][2])))
     def sample_job_every_xxxs():
-        loop_searching(run=True)
+        loop_searching(settings[1][2])
     tl.start()
-
     return render_template('index.html', info = "parse new data")
 
 @app.route('/stop-add')
 def stopadd():
-    #loop_searching(run=False)
+    #loop_searching()
     tl.stop()
+    #restart_program()
     return render_template('index.html', info = "add stop")
 
-@app.route('/searchold')
-def searchold():
-    base = Database()
-    links = base.fetch_searchold()
-    return render_template('index.html', links = links)
+# @app.route('/searchold')
+# def searchold():
+#     base = Database()
+#     links = base.fetch_searchold()
+#     return render_template('index.html', links = links)
+
+
+# ***********************************
+# ***       listing LINKS         ***
+# ***********************************
 
 @app.route('/search', methods=['GET','POST'])
 def search():
@@ -128,6 +150,10 @@ def search():
     if request.method == 'POST':
         check = request.form.getlist('options')
     return render_template('index.html', links = links, check = check)
+
+# ***********************************
+# *** transfer XLS file to base   ***
+# ***********************************
 
 @app.route('/upload', methods = ['GET', 'POST'])
 def upload():

@@ -1,0 +1,15 @@
+<div class="">
+    <a class="btn btn-light mb-1 btn-lg btn-block task" href="{{ link[2] }}">
+        {% if link[4][0][0]!="empty" %}
+        {% for tag in link[4][0] %}
+        <span class="badge badge-info badge-pill font-weight-light">{{ tag }} </span>
+        {% endfor %}
+        {% endif %}
+        {% if link[5][0][0]!="empty" %}
+        {% for tag in link[5][0] %}
+        <span class="badge badge-danger badge-pill font-weight-light">{{ tag }} </span>
+        {% endfor %}
+        {% endif %}
+        <span class="font-weight-light">{{ link[1] }}</span>
+    </a>
+</div>

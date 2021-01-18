@@ -29,14 +29,13 @@ class Database:
         except:
             return "error"
 
-
     def save_settings(self, values):
         for value in values:
             self.cursor.execute(f"UPDATE settings SET value = {str(values[value][0])} WHERE id = {int(value)}")
         self.db.commit()
 
     def insert(self, *values):
-        self.cursor.execute("""INSERT INTO offers (title, link, details, oktags, antytags) VALUES (%s, %s, %s, ARRAY [%s], ARRAY [%s])""", values)
+        self.cursor.execute("""INSERT INTO offers (title, link, details, oktags, antytags, visited, favorite) VALUES (%s, %s, %s, ARRAY [%s], ARRAY [%s], %s, %s)""", values)
         self.db.commit()
 
     def insert_xlsx(self, *values):
@@ -52,20 +51,20 @@ class Database:
         self.db.commit()
         return [list(phrases), list(antyPhrases)]
 
-    def fetch_searchold(self):
-        try:
-            xlsxCursor = self.db.cursor()
-            xlsxCursor.execute("SELECT phrase FROM xlsx")
-            xlsxPhrases = xlsxCursor.fetchall()
-            listResult = [x[0] for x in xlsxPhrases]
-            listResult = ['%'+s+'%' for s in listResult]
-            phraseCursor = self.db.cursor()
-            phraseCursor.execute(f"SELECT * FROM offers WHERE details LIKE {' OR details LIKE '.join(['%s' for _ in listResult])}", listResult)
-            result = phraseCursor.fetchall()
-            self.db.commit()
-            return list(result)
-        except:
-            return []
+    # def fetch_searchold(self):
+    #     try:
+    #         xlsxCursor = self.db.cursor()
+    #         xlsxCursor.execute("SELECT phrase FROM xlsx")
+    #         xlsxPhrases = xlsxCursor.fetchall()
+    #         listResult = [x[0] for x in xlsxPhrases]
+    #         listResult = ['%'+s+'%' for s in listResult]
+    #         phraseCursor = self.db.cursor()
+    #         phraseCursor.execute(f"SELECT * FROM offers WHERE details LIKE {' OR details LIKE '.join(['%s' for _ in listResult])}", listResult)
+    #         result = phraseCursor.fetchall()
+    #         self.db.commit()
+    #         return list(result)
+    #     except:
+    #         return []
 
     def fetch_search(self):
         try:
@@ -96,3 +95,15 @@ class Database:
         self.db.commit()
         if result[0][0] == 0:
             return True
+
+
+
+    def count_row_offers(self):
+        try:
+            countCursor = self.db.cursor()
+            countCursor.execute("SELECT count(*) FROM offers")
+            result = countCursor.fetchone()
+            self.db.commit()
+            return result
+        except:
+            return "error"
