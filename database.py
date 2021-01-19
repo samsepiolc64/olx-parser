@@ -96,8 +96,6 @@ class Database:
         if result[0][0] == 0:
             return True
 
-
-
     def count_row_offers(self):
         try:
             countCursor = self.db.cursor()
