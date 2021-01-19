@@ -18,7 +18,6 @@ app = Flask(__name__)
 Bootstrap(app)
 app.config['SECRET_KEY'] = getenv('SECRET_KEY')
 tl = Timeloop()
-processes = []
 
 # class UploadForm(FlaskForm):
 #     xlsxfile = FileField('', validators=[FileRequired()])
@@ -27,37 +26,17 @@ def restart_program():
     python = sys.executable
     os.execl(python, python, * sys.argv)
 
-
-
-
 def multi(page):
     print(page)
     offers = GetOffers(getenv('URL'), page)
     offers.get_offers()
 
 def loop_searching(pages):
-    print('kolejna petla')
-    # global processes
-    # if processes:
-    #     print("killuje procesy")
-    #     for process in processes:
-    #         print(process)
-    #         process.join()
-    #         #process.close()
-    #         process.kill()
-    #         print(process)
-    #     print(processes)
-    #     #processes = []
-    pages = int(pages)
-    print(type(pages))
+    print('next itteration')
     try:
         for page in range(1,int(pages)):
             p = Process(target=multi, args=(page,))
-            processes.append(p)
             p.start()
-            #p.join()
-            #p.terminate()
-        #print(processes)
     except:
         pass
 
@@ -70,7 +49,8 @@ def start():
     base = Database()
     tags = base.fetch_tags()
     count = base.count_row_offers()
-    return render_template('index.html', count = count, tags = tags)
+    version = getenv('VERSION')
+    return render_template('index.html', count = count, tags = tags, version = version)
 
 
 # ***********************************
