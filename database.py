@@ -13,6 +13,10 @@ class Database:
         self.cursor.execute(sql)
         self.db.commit()
 
+    # ***********************************
+    # ***          settings           ***
+    # ***********************************
+
     def settings_init(self, *values):
         for value in values:
             print(value.split(":"))
@@ -34,57 +38,21 @@ class Database:
             self.cursor.execute(f"UPDATE settings SET value = {str(values[value][0])} WHERE id = {int(value)}")
         self.db.commit()
 
+    # ***********************************
+    # ***            offers           ***
+    # ***********************************
+
     def insert(self, *values):
         self.cursor.execute("""INSERT INTO offers (title, link, details, oktags, antytags, visited, favorite) VALUES (%s, %s, %s, ARRAY [%s], ARRAY [%s], %s, %s)""", values)
         self.db.commit()
 
-    def insert_xlsx(self, *values):
-        self.cursor.execute("""INSERT INTO xlsx (phrase, antyphrase) VALUES (%s,%s)""", values)
-        self.db.commit()
-
-    def fetch_tags(self):
-        xlsxCursor = self.db.cursor()
-        xlsxCursor.execute("SELECT phrase, antyphrase FROM xlsx")
-        xlsxPhrases = xlsxCursor.fetchall()
-        phrases = [x[0] for x in xlsxPhrases]
-        antyPhrases = [x[1] for x in xlsxPhrases]
-        self.db.commit()
-        return [list(phrases), list(antyPhrases)]
-
-    # def fetch_searchold(self):
-    #     try:
-    #         xlsxCursor = self.db.cursor()
-    #         xlsxCursor.execute("SELECT phrase FROM xlsx")
-    #         xlsxPhrases = xlsxCursor.fetchall()
-    #         listResult = [x[0] for x in xlsxPhrases]
-    #         listResult = ['%'+s+'%' for s in listResult]
-    #         phraseCursor = self.db.cursor()
-    #         phraseCursor.execute(f"SELECT * FROM offers WHERE details LIKE {' OR details LIKE '.join(['%s' for _ in listResult])}", listResult)
-    #         result = phraseCursor.fetchall()
-    #         self.db.commit()
-    #         return list(result)
-    #     except:
-    #         return []
-
     def fetch_search(self):
         try:
             phraseCursor = self.db.cursor()
-            phraseCursor.execute("SELECT * FROM offers")
+            phraseCursor.execute("SELECT * FROM offers ORDER BY id DESC")
             result = phraseCursor.fetchall()
             self.db.commit()
             return list(result)
-        except:
-            return "error"
-
-    def fetch_xlsx(self):
-        try:
-            xlsxCursor = self.db.cursor()
-            xlsxCursor.execute("SELECT phrase, antyphrase FROM xlsx")
-            xlsxPhrases = xlsxCursor.fetchall()
-            phrases = [x[0] for x in xlsxPhrases]
-            antyPhrases = [x[1] for x in xlsxPhrases]
-            self.db.commit()
-            return [list(phrases), list(antyPhrases)]
         except:
             return "error"
 
@@ -103,5 +71,50 @@ class Database:
             result = countCursor.fetchone()
             self.db.commit()
             return result
+        except:
+            return "error"
+
+    def save_offer(self, values):
+        print(values)
+        keys = []
+        for value in values:
+            keys.append(value)
+        if len(keys) > 1:
+            for key in range(len(keys)):
+                id_elem = keys[0]
+                if key > 0:
+                    column = keys[key]
+                    if (values[column][0] == "on") or (values[column][0] == "True"):
+                        self.cursor.execute(f"UPDATE offers SET {column} = True WHERE id = {int(id_elem)}")
+                    else:
+                        self.cursor.execute(f"UPDATE offers SET {column} = False WHERE id = {int(id_elem)}")
+        self.db.commit()
+
+    # ***********************************
+    # ***             xlsx            ***
+    # ***********************************
+
+    def insert_xlsx(self, *values):
+        self.cursor.execute("""INSERT INTO xlsx (phrase, antyphrase) VALUES (%s,%s)""", values)
+        self.db.commit()
+
+    def fetch_tags(self):
+        xlsxCursor = self.db.cursor()
+        xlsxCursor.execute("SELECT phrase, antyphrase FROM xlsx")
+        xlsxPhrases = xlsxCursor.fetchall()
+        phrases = [x[0] for x in xlsxPhrases]
+        antyPhrases = [x[1] for x in xlsxPhrases]
+        self.db.commit()
+        return [list(phrases), list(antyPhrases)]
+
+    def fetch_xlsx(self):
+        try:
+            xlsxCursor = self.db.cursor()
+            xlsxCursor.execute("SELECT phrase, antyphrase FROM xlsx")
+            xlsxPhrases = xlsxCursor.fetchall()
+            phrases = [x[0] for x in xlsxPhrases]
+            antyPhrases = [x[1] for x in xlsxPhrases]
+            self.db.commit()
+            return [list(phrases), list(antyPhrases)]
         except:
             return "error"

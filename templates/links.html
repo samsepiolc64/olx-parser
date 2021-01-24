@@ -1,15 +1,30 @@
-<div class="">
-    <a class="btn btn-light mb-1 btn-lg btn-block task" href="{{ link[2] }}">
-        {% if link[4][0][0]!="empty" %}
-        {% for tag in link[4][0] %}
-        <span class="badge badge-info badge-pill font-weight-light">{{ tag }} </span>
-        {% endfor %}
-        {% endif %}
-        {% if link[5][0][0]!="empty" %}
-        {% for tag in link[5][0] %}
-        <span class="badge badge-danger badge-pill font-weight-light">{{ tag }} </span>
-        {% endfor %}
-        {% endif %}
-        <span class="font-weight-light">{{ link[1] }}</span>
-    </a>
-</div>
+<form method="POST" action="offers-save">
+
+    <div class="{% if link[6]==True %} btn-secondary {% elif link[7]==True %} btn-primary {% else %} btn-light {% endif %} btn-lg  mb-1 pb-1 task " >
+        <a class="flex-link task" href="{{ link[2] }}">
+            <div class="d-inline">
+                <input type="hidden"  name="{{ link[0] }}">
+
+                <input class="d-inline" id="visited" name="visited"  type="checkbox" {% if link[6]==True %} checked value="True" {% endif %} onChange='submit();'>
+                <input class="d-inline" id="hiddenVisited" name="visited"  type="hidden" value="False">
+
+                <input class="d-inline" id="favorite" name="favorite" type="checkbox" {% if link[7]==True %} checked value="True" {% endif %} onChange='submit();'>
+                <input class="d-inline" id="hiddenFavorite" name="favorite"  type="hidden" value="False">
+            </div>
+            <div class="d-inline">
+                {% if link[4][0][0]!="empty" %}
+                {% for tag in link[4][0] %}
+                <span class="badge badge-info badge-pill font-weight-light">{{ tag }} </span>
+                {% endfor %}
+                {% endif %}
+                {% if link[5][0][0]!="empty" %}
+                {% for tag in link[5][0] %}
+                <span class="badge badge-danger badge-pill font-weight-light">{{ tag }} </span>
+                {% endfor %}
+                {% endif %}
+                <span class="{% if link[6]==True %} text-white {% elif link[7]==True %} text-white {% else %} text-dark {% endif %} font-weight-light h6">{{ link[1] }}</span>
+            </div>
+        </a>
+    </div>
+</form>
+

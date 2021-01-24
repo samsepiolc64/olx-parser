@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, redirect
 from flask_bootstrap import Bootstrap
 # from flask_wtf import FlaskForm
 # from flask_wtf.file import FileField, FileRequired
@@ -12,6 +12,8 @@ from timeloop import Timeloop
 from datetime import timedelta
 import pandas as pd
 import multiprocessing
+
+
 
 load_dotenv()
 app = Flask(__name__)
@@ -112,6 +114,14 @@ def stopadd():
     #restart_program()
     return render_template('index.html', info = "add stop")
 
+@app.route('/offers-save', methods = ['GET', 'POST'])
+def offersave():
+    base = Database()
+    if request.method == 'POST':
+        data = request.form.to_dict(flat=False)
+        base.save_offer(data)
+        return redirect('/search')
+
 # @app.route('/searchold')
 # def searchold():
 #     base = Database()
@@ -125,7 +135,6 @@ def stopadd():
 
 @app.route('/search', methods=['GET','POST'])
 def search():
-    #tl.stop()
     check = []
     base = Database()
     links = base.fetch_search()
