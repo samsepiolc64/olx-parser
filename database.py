@@ -26,7 +26,7 @@ class Database:
     def fetch_settings(self):
         try:
             phraseCursor = self.db.cursor()
-            phraseCursor.execute("SELECT * FROM settings")
+            phraseCursor.execute("SELECT * FROM settings ORDER BY id ASC")
             result = phraseCursor.fetchall()
             self.db.commit()
             return list(result)
@@ -35,7 +35,11 @@ class Database:
 
     def save_settings(self, values):
         for value in values:
-            self.cursor.execute(f"UPDATE settings SET value = {str(values[value][0])} WHERE id = {int(value)}")
+            if values[value][0] == "on" or values[value][0] == "True":
+                tmpvalue = True
+            else:
+                tmpvalue = str(values[value][0])
+            self.cursor.execute(f"UPDATE settings SET value = {tmpvalue} WHERE id = {int(value)}")
         self.db.commit()
 
     # ***********************************
@@ -46,7 +50,42 @@ class Database:
         self.cursor.execute("""INSERT INTO offers (title, link, details, oktags, antytags, visited, favorite) VALUES (%s, %s, %s, ARRAY [%s], ARRAY [%s], %s, %s)""", values)
         self.db.commit()
 
-    def fetch_search(self):
+    def fetch_search(self, filtr):
+        try:
+            phraseCursor = self.db.cursor()
+            if filtr == 0:
+                phraseCursor.execute("SELECT * FROM offers ORDER BY id DESC")
+            if filtr == 1:
+                phraseCursor.execute("SELECT * FROM offers WHERE favorite = true ORDER BY id DESC")
+            if filtr == 2:
+                phraseCursor.execute("SELECT * FROM offers WHERE visited = true ORDER BY id DESC")
+            if filtr == 3:
+                phraseCursor.execute("SELECT * FROM offers WHERE favorite = true AND visited = true ORDER BY id DESC")
+            if filtr == 4:
+                phraseCursor.execute("SELECT * FROM offers WHERE antytags[1][1] = 'empty' ORDER BY id DESC")
+            if filtr == 5:
+                phraseCursor.execute("SELECT * FROM offers WHERE antytags[1][1] = 'empty' AND favorite = true ORDER BY id DESC")
+            if filtr == 6:
+                phraseCursor.execute("SELECT * FROM offers WHERE antytags[1][1] = 'empty' AND visited = true ORDER BY id DESC")
+            if filtr == 7:
+                phraseCursor.execute("SELECT * FROM offers WHERE antytags[1][1] = 'empty' AND favorite = true AND visited = true ORDER BY id DESC")
+            if filtr == 8:
+                phraseCursor.execute("SELECT * FROM offers WHERE antytags[1][1] != 'empty' ORDER BY id DESC")
+            if filtr == 9:
+                phraseCursor.execute("SELECT * FROM offers WHERE antytags[1][1] != 'empty' AND favorite = true ORDER BY id DESC")
+            if filtr == 10:
+                phraseCursor.execute("SELECT * FROM offers WHERE antytags[1][1] != 'empty' AND visited = true ORDER BY id DESC")
+            if filtr == 11:
+                phraseCursor.execute("SELECT * FROM offers WHERE antytags[1][1] != 'empty' AND favorite = true AND visited = true ORDER BY id DESC")
+
+            result = phraseCursor.fetchall()
+            self.db.commit()
+            return list(result)
+        except:
+            return "error"
+
+
+    def fetch_search_xxx(self):
         try:
             phraseCursor = self.db.cursor()
             phraseCursor.execute("SELECT * FROM offers ORDER BY id DESC")
@@ -55,6 +94,7 @@ class Database:
             return list(result)
         except:
             return "error"
+
 
     def check_rec_not_exist(self, *link):
         linkCursor = self.db.cursor()
@@ -75,7 +115,6 @@ class Database:
             return "error"
 
     def save_offer(self, values):
-        print(values)
         keys = []
         for value in values:
             keys.append(value)
