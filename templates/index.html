@@ -56,7 +56,7 @@
         </div>
     </div>
     {% endif %}
-    {% if links %}
+    {% if links or links == [] %}
     <div class="">
         <h3>Links...</h3>
         <hr>
@@ -84,7 +84,7 @@
                        value="False">
             </form>
         </div>
-        {% if links != 1 %}
+        {% if links != 1 and links != [] %}
         <div class="btn-md pl-2 pb-1">
             <i class="fas fa-low-vision text-secondary fa-priv" data-toggle="tooltip" data-placement="top"
                title="Odwiedzony"></i>
@@ -98,7 +98,7 @@
 
         {% else %}
 
-        no datas
+        no data
 
 
         {% endif %}

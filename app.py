@@ -161,7 +161,6 @@ def search():
     base.save_settings(data)
     settings = base.fetch_settings()
 
-    print(settings)
 
     for setting in settings:
         if setting[1] == "LinksPhrases":
@@ -206,6 +205,8 @@ def search():
             Links_Phrases == "false" and Links_Antyphrases == "false" and Links_Favorite == "true" and Links_Visited == "false") or (
             Links_Phrases == "false" and Links_Antyphrases == "false" and Links_Favorite == "false" and Links_Visited == "true")):
         links = 1
+
+
 
     return render_template('index.html', links=links, settingsLinks=settings)
 
