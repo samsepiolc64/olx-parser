@@ -26,11 +26,14 @@ body
 }
 .flex-link {
     display: flex !important;
-    width:90% !important;
+    width:100% !important;
     text-decoration: none !important;
 }
 .flex-right {
     z-index:20;
     float: right;
     margin-top: 10px;
+}
+.d-inoneline {
+    display:inline;
 }
