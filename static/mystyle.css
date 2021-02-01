@@ -9,20 +9,28 @@ body
     background-size: cover;*/
 }
 .fa-priv {
-
-    font-size: 20px;
+    font-size: 17px;
+    margin-left:-2px;
+}
+.fa-priv:first-child {
+    margin-left:6px;
 }
 .task {
-    display: block;
+    display: flex;
+    align-items:center;
+    height:50px;
     text-align: left;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
 }
 .flex-link {
-    display: inline-block !important;
+    display: flex !important;
     width:100% !important;
-    #background: #fceb73;
     text-decoration: none !important;
 }
-
+.flex-right {
+    z-index:20;
+    float: right;
+    margin-top: 10px;
+}

@@ -1,21 +1,21 @@
 {% extends "base.html" %}
 {% block content %}
-<div class="container">
+<div class="container" xmlns="http://www.w3.org/1999/html">
     {% if tags %}
     <div class="row justify-content-between">
         <div class="col-sm-12 col-lg mb-5">
-            <h3>Current phrases</h3>
+            <h3>Current keywords</h3>
             <hr>
             <div class="shadow-lg bg-light p-3 h5 rounded">
                 {% for tag in tags[0] %}
                 {% if tag!="NaN" %}
-                <span class="btn badge badge-info badge-pill mb-1 font-weight-light">{{ tag }}</span>
+                <span class="btn badge badge-success badge-pill mb-1 font-weight-light">{{ tag }}</span>
                 {% endif %}
                 {% endfor %}
             </div>
         </div>
         <div class="col-sm-12 col-lg mb-5">
-            <h3>Current antyphrases</h3>
+            <h3>Current negative keywords</h3>
             <hr>
             <div class="shadow-lg bg-light p-3 h5 rounded">
                 {% for tag in tags[1] %}
@@ -58,49 +58,48 @@
     {% endif %}
     {% if links or links == [] %}
     <div class="">
-        <h3>Links...</h3>
+        <h3>Links</h3>
         <hr>
         <div class="mb-3">
             <form method="POST" action="search">
-                <label for="exampleFormControlInput1">Phrases</label>
-                <input class="d-inline" id="linksPhrases" name="{{ settingsLinks[3][0] }}" type="checkbox" {% if
-                       settingsLinks[3][2]=="true" %} checked value="True" {% endif %} onChange='submit();'>
-                <input class="d-inline" id="hiddenLinksPhrases" name="{{ settingsLinks[3][0] }}" type="hidden"
-                       value="False">
-                <label for="exampleFormControlInput1">Antyphrases</label>
-                <input class="d-inline" id="linksAntyphrases" name="{{ settingsLinks[4][0] }}" type="checkbox" {% if
-                       settingsLinks[4][2]=="true" %} checked value="True" {% endif %} onChange='submit();'>
-                <input class="d-inline" id="hiddenLinksAntyphrases" name="{{ settingsLinks[4][0] }}" type="hidden"
-                       value="False">
-                <label for="exampleFormControlInput1">Favorites</label>
-                <input class="d-inline" id="linksFavorite" name="{{ settingsLinks[5][0] }}" type="checkbox" {% if
-                       settingsLinks[5][2]=="true" %} checked value="True" {% endif %} onChange='submit();'>
-                <input class="d-inline" id="hiddenLinksFavorite" name="{{ settingsLinks[5][0] }}" type="hidden"
-                       value="False">
-                <label for="exampleFormControlInput1">Visited</label>
-                <input class="d-inline" id="linksVisited" name="{{ settingsLinks[6][0] }}" type="checkbox" {% if
-                       settingsLinks[6][2]=="true" %} checked value="True" {% endif %} onChange='submit();'>
-                <input class="d-inline" id="hiddenLinksVisited" name="{{ settingsLinks[6][0] }}" type="hidden"
-                       value="False">
+                <label class="btn btn-success" for="linksPhrases">Keywords
+                    <input class="d-inline" id="linksPhrases" name="{{ settingsLinks[3][0] }}" type="checkbox" {% if
+                           settingsLinks[3][2]=="true" %} checked value="True" {% endif %} onChange='submit();'>
+                    <input class="d-inline" id="hiddenLinksPhrases" name="{{ settingsLinks[3][0] }}" type="hidden"
+                           value="False">
+                </label>
+                <label class="btn btn-danger" for="linksAntyphrases">Negative keywords
+                    <input class="d-inline" id="linksAntyphrases" name="{{ settingsLinks[4][0] }}" type="checkbox" {% if
+                           settingsLinks[4][2]=="true" %} checked value="True" {% endif %} onChange='submit();'>
+                    <input class="d-inline" id="hiddenLinksAntyphrases" name="{{ settingsLinks[4][0] }}" type="hidden"
+                           value="False">
+                </label>
+                <label class="btn btn-secondary" for="linksVisited">Visited links
+                    <input class="d-inline" id="linksVisited" name="{{ settingsLinks[6][0] }}" type="checkbox" {% if
+                           settingsLinks[6][2]=="true" %} checked value="True" {% endif %} onChange='submit();'>
+                    <input class="d-inline" id="hiddenLinksVisited" name="{{ settingsLinks[6][0] }}" type="hidden"
+                           value="False">
+                </label>
+                <label class="btn btn-primary" for="linksFavorite">Favorites links
+                    <input class="d-inline" id="linksFavorite" name="{{ settingsLinks[5][0] }}" type="checkbox" {% if
+                           settingsLinks[5][2]=="true" %} checked value="True" {% endif %} onChange='submit();'>
+                    <input class="d-inline" id="hiddenLinksFavorite" name="{{ settingsLinks[5][0] }}" type="hidden"
+                           value="False">
+                </label>
             </form>
         </div>
         {% if links != 1 and links != [] %}
         <div class="btn-md pl-2 pb-1">
-            <i class="fas fa-low-vision text-secondary fa-priv" data-toggle="tooltip" data-placement="top"
-               title="Odwiedzony"></i>
-            <i class="far fa-bookmark text-primary fa-priv" data-toggle="tooltip" data-placement="top"
-               title="Ulubiony"></i>
+            <i class="fas fa-circle text-secondary fa-priv" data-toggle="tooltip" data-placement="top"
+               title="Visited links"></i>
+            <i class="fas fa-circle text-primary fa-priv" data-toggle="tooltip" data-placement="top"
+               title="Favorites links"></i>
         </div>
-
         {% for link in links %}
-            {% include "links.html" %}
+        {% include "links.html" %}
         {% endfor %}
-
         {% else %}
-
         no data
-
-
         {% endif %}
     </div>
     {% endif %}
@@ -153,9 +152,11 @@
     $(document).ready(function(){
         $('[data-toggle="tooltip"]').tooltip();
     });
+
 </script>
 <script type="text/javascript">
     var page = {{ page }}
+
 </script>
 <script type="text/javascript">
     if(document.getElementById("visited").checked) {
@@ -176,5 +177,6 @@
     if(document.getElementById("linksFavorite").checked) {
         document.getElementById('hiddenLinksFavorite').enabled = true;
     }
+
 </script>
 {% endblock %}
