@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {% block content %}
-<div class="container" xmlns="http://www.w3.org/1999/html">
+<body onload="loadScroll();">
+<div class="container" xmlns="http://www.w3.org/1999/html" >
     {% if tags %}
     <div class="row justify-content-between">
         <div class="col-sm-12 col-lg mb-5">
@@ -145,6 +146,7 @@
     </div>
     {% endif %}
 </div>
+</body>
 {% endblock %}
 {% block scripts %}
 {{ super() }}
@@ -156,7 +158,6 @@
 </script>
 <script type="text/javascript">
     var page = {{ page }}
-
 </script>
 <script type="text/javascript">
     if(document.getElementById("visited").checked) {
@@ -178,5 +179,23 @@
         document.getElementById('hiddenLinksFavorite').enabled = true;
     }
 
+</script>
+<script type="text/javascript">
+  function setCookie(name, val, exp, pth, dmn, scr) {
+    document.cookie = name + '=' + escape(val) +
+    (exp ? ';expires=' + e.toGMTString() : '') + (pth ? ';path=' + pth : '') +
+    (dmn ? ';domain=' + dmn : '') + (scr ? ';secure' : '');
+  }
+  function getCookie(name) {
+    var r = new RegExp('( |^)' + name + '=?([^;]*)(;|$)', ''), c;
+    return (c = document.cookie.match(r)) ? unescape(c[2]) : null;
+  }
+  function saveScroll() {
+    setCookie('scrollLeft', window.scrollX);
+    setCookie('scrollTop', window.scrollY);
+  }
+  function loadScroll() {
+    scrollTo(getCookie('scrollLeft'), getCookie('scrollTop'));
+  }
 </script>
 {% endblock %}

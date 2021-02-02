@@ -123,7 +123,9 @@ class Database:
                 id_elem = keys[0]
                 if key > 0:
                     column = keys[key]
-                    if (values[column][0] == "on") or (values[column][0] == "True"):
+                    if column == "deleted":
+                        self.cursor.execute(f"DELETE FROM offers WHERE id = {int(id_elem)}")
+                    elif (values[column][0] == "on") or (values[column][0] == "True"):
                         self.cursor.execute(f"UPDATE offers SET {column} = True WHERE id = {int(id_elem)}")
                     else:
                         self.cursor.execute(f"UPDATE offers SET {column} = False WHERE id = {int(id_elem)}")
