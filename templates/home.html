@@ -1,0 +1,40 @@
+    <div class="row justify-content-between">
+        <div class="col-sm-12 col-lg mb-5">
+            <h3>Current keywords</h3>
+            <hr>
+            <div class="shadow-lg bg-light p-3 h5 rounded">
+                {% for tag in tags[0] %}
+                {% if tag!="NaN" %}
+                <span class="btn badge badge-success badge-pill mb-1 font-weight-light">{{ tag }}</span>
+                {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+        <div class="col-sm-12 col-lg mb-5">
+            <h3>Current negative keywords</h3>
+            <hr>
+            <div class="shadow-lg bg-light p-3 h5 rounded">
+                {% for tag in tags[1] %}
+                {% if tag!="NaN" %}
+                <span class="btn badge badge-danger badge-pill mb-1 font-weight-light">{{ tag }}</span>
+                {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    <div class="row justify-content-between">
+        <div class="col-sm-12 col-lg mb-5">
+            <h3>Count links</h3>
+            <hr>
+            <div class="shadow-lg bg-light p-3 h5 rounded">
+                {{ count[0] }}
+            </div>
+        </div>
+        <div class="col-sm-12 col-lg mb-5">
+            <h3>Version</h3>
+            <hr>
+            <div class="shadow-lg bg-light p-3 h5 rounded">
+                {{ version }}
+            </div>
+        </div>
+    </div>

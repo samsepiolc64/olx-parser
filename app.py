@@ -217,9 +217,11 @@ def search():
 
 @app.route('/upload', methods=['GET', 'POST'])
 def upload():
-    base = Database()
-    base.create_db(getenv('SQL_DEL_XLSX'))
-    base.create_db(getenv('SQL_XLSX'))
+
+    # base = Database()
+    # base.create_db(getenv('SQL_DEL_XLSX'))
+    # base.create_db(getenv('SQL_XLSX'))
+
     #
     # form = UploadForm()
     # if form.validate_on_submit():
@@ -231,6 +233,8 @@ def upload():
 
 @app.route('/phrases', methods=['GET', 'POST'])
 def phrases():
+    base = Database()
+    base.create_db(getenv('SQL_DEL_XLSX'))
     if request.method == 'POST':
         user_csv = request.form['xlsxfile']
         data = pd.read_excel(user_csv, index_col=None, header=None, usecols="A,C").values
