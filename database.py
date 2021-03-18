@@ -157,7 +157,7 @@ class Database:
         # xlsx.to_excel(exportFilePath)
         # root.destroy()
         # root.mainloop()
-        path = os.path.join(os.path.join(os.environ['USERPROFILE']))+"\Desktop\excel-test.xlsx"
+        path = os.path.join(os.path.join(os.path.expanduser('~')), 'Desktop')+"\excel-test.xlsx"
         xlsx.to_excel(path)
 
 
