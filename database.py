@@ -1,5 +1,6 @@
 import psycopg2
 import pandas as pd
+import os
 # import tkinter as tk
 # from tkinter import filedialog
 
@@ -156,7 +157,8 @@ class Database:
         # xlsx.to_excel(exportFilePath)
         # root.destroy()
         # root.mainloop()
-        xlsx.to_excel("excel-test.xlsx")
+        path = os.path.join(os.path.join(os.environ['USERPROFILE']))+"\Desktop\excel-test.xlsx"
+        xlsx.to_excel(path)
 
 
     def insert_xlsx(self, *values):
