@@ -2,8 +2,9 @@ body
  {
     /*padding-top:30px;*/
     /*background: url('images/bg-image.jpeg') no-repeat center center fixed;*/
-    background: url('images/bg-pattern.png') #e9e9e9 repeat;
-/*    -webkit-background-size: cover;
+    /*background: url('images/bg-pattern.png') #e9e9e9 repeat;*/
+    background-color:#EAEDED ;
+    /*-webkit-background-size: cover;
     -moz-background-size: cover;
     -o-background-size: cover;
     background-size: cover;*/

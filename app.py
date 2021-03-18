@@ -12,6 +12,9 @@ from timeloop import Timeloop
 from datetime import timedelta
 import pandas as pd
 import multiprocessing
+import os
+
+
 
 load_dotenv()
 app = Flask(__name__)
@@ -19,16 +22,14 @@ Bootstrap(app)
 app.config['SECRET_KEY'] = getenv('SECRET_KEY')
 tl = Timeloop()
 
-
-# class UploadForm(FlaskForm):
-#     xlsxfile = FileField('', validators=[FileRequired()])
-
 def restart_program():
     python = sys.executable
     os.execl(python, python, *sys.argv)
 
 
 def multi(page):
+    # print("parent:", os.getppid())
+    # print("child:", os.getpid())
     print(page)
     offers = GetOffers(getenv('URL'), page)
     offers.get_offers()
@@ -38,8 +39,11 @@ def loop_searching(pages):
     print('next itteration')
     try:
         for page in range(1, int(pages)):
-            p = Process(target=multi, args=(page,))
+            p = Process(target=multi, args=(page,), name="pool")
+            # p.setDaemon(True)
             p.start()
+            procArray.append(p)
+            #p.join()
     except:
         pass
 
@@ -50,10 +54,27 @@ def loop_searching(pages):
 
 @app.route('/')
 def start():
+
+    global procArray
+    procArray = []
+
+    # print(os.getppid())
+    # print(os.getpid())
+
     base = Database()
     tags = base.fetch_tags()
     count = base.count_row_offers()
     version = getenv('VERSION')
+
+    # print("children:", multiprocessing.active_children())
+
+    # for p in multiprocessing.active_children():
+    #     if p.name == "pool":
+    #         print("aktywny")
+    #     else:
+    #         print("nieaktywny")
+
+
     return render_template('index.html', count=count, tags=tags, version=version)
 
 
@@ -124,8 +145,18 @@ def add():
 
 @app.route('/stop-add')
 def stopadd():
+    # print("dlugosc tablicy:", len(procArray))
+    # for p in procArray:
+    #     p.setDaemon(False)
+    #     p.terminate
+    #     procArray.remove(p)
+    #
+    # print("dlugosc tablicy po terminate:", len(procArray))
+
     # loop_searching()
+
     tl.stop()
+
     # restart_program()
     return render_template('index.html', info="add stop")
 
@@ -215,9 +246,16 @@ def search():
 # *** transfer XLS file to base   ***
 # ***********************************
 
+
+@app.route('/excel', methods=['GET', 'POST'])
+def excel():
+    base = Database()
+    base.base_to_xlsx()
+    return render_template('index.html', info="excel generated")
+
+
 @app.route('/upload', methods=['GET', 'POST'])
 def upload():
-
     # base = Database()
     # base.create_db(getenv('SQL_DEL_XLSX'))
     # base.create_db(getenv('SQL_XLSX'))
