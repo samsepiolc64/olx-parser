@@ -25,6 +25,3 @@ flask-nav==0.6
 xlrd==1.2.0
 psycopg2==2.8.6
 timeloop==1.0.2
-tk==0.1.0
-
-
