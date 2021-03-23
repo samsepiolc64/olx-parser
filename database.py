@@ -3,7 +3,7 @@ import pandas as pd
 import os
 # import tkinter as tk
 # from tkinter import filedialog
-
+import easygui
 
 from os import getenv
 
@@ -158,8 +158,11 @@ class Database:
         # root.destroy()
         # root.mainloop()
 
-        path = os.path.join(os.path.join(os.path.expanduser('~')), 'Desktop')+"\excel-test.xlsx"
-        xlsx.to_excel(path)
+        easygui.filesavebox()
+
+
+        # path = os.path.join(os.path.join(os.path.expanduser('~')), 'Desktop')+"\excel-test.xlsx"
+        # xlsx.to_excel(path)
 
 
     def insert_xlsx(self, *values):
