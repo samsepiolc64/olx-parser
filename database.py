@@ -149,19 +149,8 @@ class Database:
 
         xlsx = pd.read_sql(sql="SELECT title, link FROM offers", con=self.db)
         xlsx['link'] = xlsx['link'].apply(lambda x: make_hyperlink(x))
-        # root = tk.Tk()
-        # root.attributes("-topmost", True)
-        # root.lift()
-        # root.withdraw()
-        # exportFilePath = filedialog.asksaveasfilename(defaultextension='.xlsx', parent=root)
-        # xlsx.to_excel(exportFilePath)
-        # root.destroy()
-        # root.mainloop()
 
-
-
-
-        path = os.path.join(os.path.join(os.path.expanduser('~')), 'Desktop')+"\excel-test.xlsx"
+        path = os.path.join(os.path.join(os.path.expanduser('~')))+"\excel-test.xlsx"
         xlsx.to_excel(path)
 
 
