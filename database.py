@@ -1,6 +1,7 @@
 import psycopg2
 import pandas as pd
 import os
+from pathlib import Path
 # import tkinter as tk
 # from tkinter import filedialog
 
@@ -140,19 +141,16 @@ class Database:
     # ***********************************
     # ***             xlsx            ***
     # ***********************************
-
     def base_to_xlsx(self):
-
-
         def make_hyperlink(value):
             return '=HYPERLINK("%s")' % value
 
         xlsx = pd.read_sql(sql="SELECT title, link FROM offers", con=self.db)
         xlsx['link'] = xlsx['link'].apply(lambda x: make_hyperlink(x))
-
-        path = os.path.join(os.path.join(os.path.expanduser('~')))+"\excel-test.xlsx"
-        xlsx.to_excel(path)
-
+        path = Path(__file__).parent.absolute()
+        print(path)
+        # path = os.path.join(os.path.join(os.path.expanduser('~')))+"\excel-test.xlsx"
+        # xlsx.to_excel(path)
 
     def insert_xlsx(self, *values):
         self.cursor.execute("""INSERT INTO xlsx (phrase, antyphrase) VALUES (%s,%s)""", values)
