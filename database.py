@@ -1,12 +1,6 @@
 import psycopg2
 import pandas as pd
 import os
-from pathlib import Path
-from easygui import *
-# import tkinter as tk
-# from tkinter import filedialog
-
-
 from os import getenv
 
 class Database:
@@ -148,11 +142,7 @@ class Database:
 
         xlsx = pd.read_sql(sql="SELECT title, link FROM offers", con=self.db)
         xlsx['link'] = xlsx['link'].apply(lambda x: make_hyperlink(x))
-        path = Path(__file__).parent.absolute()
-        print(path)
-        egdemo()
-        # path = os.path.join(os.path.join(os.path.expanduser('~')))+"\excel-test.xlsx"
-        # xlsx.to_excel(path)
+        xlsx.to_excel("excel-test.xlsx")
 
     def insert_xlsx(self, *values):
         self.cursor.execute("""INSERT INTO xlsx (phrase, antyphrase) VALUES (%s,%s)""", values)
