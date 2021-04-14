@@ -3,6 +3,8 @@ import pandas as pd
 import os
 from os import getenv
 
+
+
 class Database:
     def __init__(self):
         self.db = psycopg2.connect(dbname=getenv('DB_NAME'), port=getenv('DB_PORT'), user=getenv('DB_USER'), password=getenv('DB_PASS'), host=getenv('DB_HOST'))
@@ -143,6 +145,17 @@ class Database:
         xlsx = pd.read_sql(sql="SELECT title, link FROM offers", con=self.db)
         xlsx['link'] = xlsx['link'].apply(lambda x: make_hyperlink(x))
         xlsx.to_excel("excel-test.xlsx")
+
+        d = os.path.dirname(os.path.abspath(__file__))  # your script's dir, my_project
+        filepath = os.path.join(d, "excel-test.xlsx")
+        filepath = os.path.abspath(filepath)  # make it an absolute path
+
+        print(filepath)
+
+
+
+
+
 
     def insert_xlsx(self, *values):
         self.cursor.execute("""INSERT INTO xlsx (phrase, antyphrase) VALUES (%s,%s)""", values)
