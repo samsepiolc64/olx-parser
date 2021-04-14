@@ -250,8 +250,30 @@ def search():
 @app.route('/excel', methods=['GET', 'POST'])
 def excel():
     base = Database()
-    base.base_to_xlsx()
-    return render_template('index.html', info="excel generated")
+    xxx = base.base_to_xlsx()
+
+    #
+    # import win32ui
+    # winobj = win32ui.CreateFileDialog(1, ".pdf", "", 0,
+    #     "PDF Files (*.pdf)|*.pdf|All Files (*.*)|*.*|")
+    # winobj.DoModal()
+    # # return jsonify({'filepath': winobj.GetPathName()})
+
+
+
+
+    #
+    # from tkinter import Tk
+    # from tkinter.filedialog import askopenfilename
+    # root = Tk()
+    # root.withdraw()
+    # # ensure the file dialog pops to the top window
+    # root.wm_attributes('-topmost', 1)
+    # fname = askopenfilename(parent=root)
+    # # return jsonify({'filepath': fname})
+    #
+
+    return render_template('index.html', info=xxx)
 
 
 @app.route('/upload', methods=['GET', 'POST'])
