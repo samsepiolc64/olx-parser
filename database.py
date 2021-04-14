@@ -148,13 +148,9 @@ class Database:
 
         d = os.path.dirname(os.path.abspath(__file__))  # your script's dir, my_project
         filepath = os.path.join(d, "excel-test.xlsx")
-        filepath = os.path.abspath(filepath)  # make it an absolute path
+        # filepath = os.path.abspath(filepath)  # make it an absolute path
 
         return(filepath)
-
-
-
-
 
 
     def insert_xlsx(self, *values):
