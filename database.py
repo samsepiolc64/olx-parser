@@ -146,7 +146,9 @@ class Database:
         # xlsx.to_html("excel-test.html")
         # webbrowser.open("excel-test.html")
         # return("ok")
-        return xlsx
+        data = xlsx.to_csv()
+        # data = xlsx.to_excel()
+        return data
 
     def insert_xlsx(self, *values):
         self.cursor.execute("""INSERT INTO xlsx (phrase, antyphrase) VALUES (%s,%s)""", values)

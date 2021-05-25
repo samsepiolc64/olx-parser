@@ -252,7 +252,7 @@ def excel():
     base = Database()
     xxx = base.base_to_xlsx()
     # return render_template('index.html', info=xxx)
-    return Response(xxx, mimetype="text/csv", headers={"Content-Disposition": "attachment;filename=employee_report.csv"})
+    return Response(xxx, mimetype="text/csv", headers={"Content-Disposition": "attachment;filename=csv-test.csv"})
 
 
 @app.route('/upload', methods=['GET', 'POST'])
