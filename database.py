@@ -3,6 +3,7 @@ import pandas as pd
 import os
 from os import getenv
 
+import webbrowser
 
 
 class Database:
@@ -142,16 +143,14 @@ class Database:
         def make_hyperlink(value):
             return '=HYPERLINK("%s")' % value
 
+
+
         xlsx = pd.read_sql(sql="SELECT title, link FROM offers", con=self.db)
-        xlsx['link'] = xlsx['link'].apply(lambda x: make_hyperlink(x))
+        # xlsx['link'] = xlsx['link'].apply(lambda x: make_hyperlink(x))
         xlsx.to_excel("excel-test.xlsx")
-
-        d = os.path.dirname(os.path.abspath(__file__))  # your script's dir, my_project
-        filepath = os.path.join(d, "excel-test.xlsx")
-        # filepath = os.path.abspath(filepath)  # make it an absolute path
-
-        return(filepath)
-
+        xlsx.to_html("excel-test.html")
+        webbrowser.open("excel-test.html")
+        return("ok")
 
     def insert_xlsx(self, *values):
         self.cursor.execute("""INSERT INTO xlsx (phrase, antyphrase) VALUES (%s,%s)""", values)

@@ -75,6 +75,13 @@
 <!--    var page = {{ page }}-->
 <!--</script>-->
 <script type="text/javascript">
+    $('a.olx-link').click(function(e) {
+        <!--e.preventDefault();-->
+        document.getElementById('hiddenVisited').enabled = true;
+        saveScroll();
+        })
+</script>
+<script type="text/javascript">
     if(document.getElementById("visited").checked) {
         document.getElementById('hiddenVisited').enabled = true;
     }
