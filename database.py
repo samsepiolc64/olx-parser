@@ -1,6 +1,7 @@
 import psycopg2
 import pandas as pd
 import os
+from io import BytesIO
 from os import getenv
 
 class Database:
@@ -141,14 +142,13 @@ class Database:
             return '=HYPERLINK("%s")' % value
 
         xlsx = pd.read_sql(sql="SELECT title, link FROM offers", con=self.db)
-        # xlsx['link'] = xlsx['link'].apply(lambda x: make_hyperlink(x))
-        # xlsx.to_excel("excel-test.xlsx")
-        # xlsx.to_html("excel-test.html")
-        # webbrowser.open("excel-test.html")
-        # return("ok")
-        data = xlsx.to_csv()
-        # data = xlsx.to_excel()
-        return data
+        xlsx['link'] = xlsx['link'].apply(lambda x: make_hyperlink(x))
+        output = BytesIO()
+        writer = pd.ExcelWriter(output)
+        xlsx.to_excel(writer)
+        writer.save()
+        processed_data = output.getvalue()
+        return processed_data
 
     def insert_xlsx(self, *values):
         self.cursor.execute("""INSERT INTO xlsx (phrase, antyphrase) VALUES (%s,%s)""", values)

@@ -250,10 +250,10 @@ def search():
 @app.route('/excel', methods=['GET', 'POST'])
 def excel():
     base = Database()
-    xxx = base.base_to_xlsx()
+    output = base.base_to_xlsx()
     # return render_template('index.html', info=xxx)
-    return Response(xxx, mimetype="text/csv", headers={"Content-Disposition": "attachment;filename=csv-test.csv"})
-
+    # return Response(xxx, mimetype="text/csv", headers={"Content-Disposition": "attachment;filename=csv-test.csv"})
+    return Response(output, mimetype="application/ms-excel", headers={"Content-Disposition":"attachment;filename=excel-test.xls"})
 
 @app.route('/upload', methods=['GET', 'POST'])
 def upload():
