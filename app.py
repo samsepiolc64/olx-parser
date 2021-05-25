@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, Response
 from flask_bootstrap import Bootstrap
 # from flask_wtf import FlaskForm
 # from flask_wtf.file import FileField, FileRequired
@@ -251,7 +251,8 @@ def search():
 def excel():
     base = Database()
     xxx = base.base_to_xlsx()
-    return render_template('index.html', info=xxx)
+    # return render_template('index.html', info=xxx)
+    return Response(xxx, mimetype="text/csv", headers={"Content-Disposition": "attachment;filename=employee_report.csv"})
 
 
 @app.route('/upload', methods=['GET', 'POST'])
