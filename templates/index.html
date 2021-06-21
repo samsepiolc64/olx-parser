@@ -8,6 +8,15 @@
     {% if info %}
     {% include "info.html" %}
     {% endif %}
+
+    {% if login %}
+    {% include "login.html" %}
+    {% endif %}
+    {% if register %}
+    {% include "register.html" %}
+    {% endif %}
+
+
     {% if links or links == [] %}
     <div class="">
         <h3>Links</h3>

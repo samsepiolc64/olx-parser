@@ -1,0 +1,12 @@
+<div class="">
+    <h3>Login</h3>
+    <hr>
+    <form method="POST" action="">
+        {{form.hidden_tag()}}
+        {{form.username}}
+        {{form.password}}
+        {{form.submit}}
+    </form>
+    <a href="{{url_for('register')}}">Don't have an account? Sign Up!</a>
+
+</div>

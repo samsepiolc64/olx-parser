@@ -2,6 +2,11 @@ from flask import Flask, render_template, request, redirect, url_for, Response
 from flask_bootstrap import Bootstrap
 # from flask_wtf import FlaskForm
 # from flask_wtf.file import FileField, FileRequired
+from flask_login import UserMixin
+from flask_wtf import FlaskForm
+# from flask_wtf import wtforms
+from wtforms import StringField, PasswordField, SubmitField
+from wtforms.validators import InputRequired, Length, ValidationError
 from database import Database
 from getoffers import GetOffers
 from xlsx2db import Xlsx2Db
@@ -48,6 +53,23 @@ def loop_searching(pages):
         pass
 
 
+class RegisterForm(FlaskForm):
+    username = StringField(validators = [InputRequired(), Length(min=4, max=20)], render_kw={"placeholder":"Username"})
+    password = PasswordField(validators=[InputRequired(), Length(min=4, max=20)], render_kw={"placeholder":"Password"})
+    submit = SubmitField("Register")
+
+    def validate_username(self, username):
+        existing_user_username = User.query.filter_by(username = username.data).first()
+        if existing_user_username:
+            raise ValidationError("That user already exists. Please choose a different one.")
+
+
+class LoginForm(FlaskForm):
+    username = StringField(validators = [InputRequired(), Length(min=4, max=20)], render_kw={"placeholder":"Username"})
+    password = PasswordField(validators=[InputRequired(), Length(min=4, max=20)], render_kw={"placeholder":"Password"})
+    submit = SubmitField("Login")
+
+
 # ***********************************
 # ***       MAIN route            ***
 # ***********************************
@@ -76,6 +98,27 @@ def start():
 
 
     return render_template('index.html', count=count, tags=tags, version=version)
+
+
+# ***********************************
+# ***          LOGIN              ***
+# ***********************************
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    form = LoginForm()
+    return render_template('index.html', login=1, form=form)
+
+
+# ***********************************
+# ***          REGISTER              ***
+# ***********************************
+
+@app.route('/register', methods=['GET', 'POST'])
+def register():
+    form = RegisterForm()
+    return render_template('index.html', register=1, form=form)
+
 
 
 # ***********************************

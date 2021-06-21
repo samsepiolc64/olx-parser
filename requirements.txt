@@ -25,3 +25,8 @@ flask-nav==0.6
 xlrd==1.2.0
 psycopg2==2.8.6
 timeloop==1.0.2
+WTForms==3.0.0a1
+Flask-Login==0.5.0
+Flask-WTF==0.15.1
+
+
