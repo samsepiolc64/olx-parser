@@ -3,6 +3,7 @@ import pandas as pd
 import os
 from io import BytesIO
 from os import getenv
+import psycopg2.extras
 
 class Database:
     def __init__(self):
@@ -44,6 +45,48 @@ class Database:
                 tmpvalue = str(values[value][0])
             self.cursor.execute(f"UPDATE settings SET value = {tmpvalue} WHERE id = {int(value)}")
         self.db.commit()
+
+
+    # ***********************************
+    # *** registration/login/profile  ***
+    # ***********************************
+
+    def register_user(self, *values):
+        self.cursor.execute("""INSERT INTO users (username, password) VALUES (%s, %s)""", values)
+        self.db.commit()
+
+
+    def login_user(self, value):
+        try:
+            # userCursor = self.db.cursor()
+            userCursor = self.db.cursor(cursor_factory=psycopg2.extras.DictCursor)
+            userCursor.execute("SELECT * FROM users WHERE username = %s", (value,))
+            result = userCursor.fetchone()
+            self.db.commit()
+            return result
+        except:
+            return "error"
+
+    def profile_user(self, value):
+        try:
+            # userCursor = self.db.cursor()
+            idCursor = self.db.cursor(cursor_factory=psycopg2.extras.DictCursor)
+            idCursor.execute("SELECT * FROM users WHERE id = %s", [value])
+            result = idCursor.fetchone()
+            self.db.commit()
+            return result
+        except:
+            return "error"
+
+
+
+
+        # return self.db.cursor(cursor_factory=psycopg2.extras.DictCursor)
+
+
+
+
+
 
     # ***********************************
     # ***            offers           ***
