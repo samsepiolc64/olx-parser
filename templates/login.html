@@ -3,9 +3,19 @@
     <hr>
     <form method="POST" action="">
         {{form.hidden_tag()}}
-        {{form.username}}
-        {{form.password}}
-        {{form.submit}}
+        <div class="custom-file text-center">
+            <div class="fieldWrapper">
+                <label for='{{ form.username }}'>Login:</label>
+                {{ form.username }}
+            </div>
+            <div class="fieldWrapper">
+                <label for='{{ form.password }}'>Password:</label>
+                {{ form.password }}
+            </div>
+            <input class="btn btn-lg btn-primary" type="submit" name="" value="Login">
+            </br>
+            <a href="{{url_for('register')}}">Don't have an account? Sign Up!</a>
+        </div>
     </form>
     {% with messages = get_flashed_messages() %}
         {% if messages %}
@@ -14,6 +24,4 @@
             {% endfor %}
         {% endif %}
     {% endwith %}
-    <a href="{{url_for('register')}}">Don't have an account? Sign Up!</a>
-
 </div>
