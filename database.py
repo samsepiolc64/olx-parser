@@ -46,7 +46,6 @@ class Database:
             self.cursor.execute(f"UPDATE settings SET value = {tmpvalue} WHERE id = {int(value)}")
         self.db.commit()
 
-
     # ***********************************
     # *** registration/login/profile  ***
     # ***********************************
@@ -77,23 +76,14 @@ class Database:
             return result
         except:
             return "error"
-
-
-
-
         # return self.db.cursor(cursor_factory=psycopg2.extras.DictCursor)
-
-
-
-
-
 
     # ***********************************
     # ***            offers           ***
     # ***********************************
 
     def insert(self, *values):
-        self.cursor.execute("""INSERT INTO offers (title, link, details, oktags, antytags, visited, favorite) VALUES (%s, %s, %s, ARRAY [%s], ARRAY [%s], %s, %s)""", values)
+        self.cursor.execute("""INSERT INTO offers (title, link, details, oktags, antytags, visited, favorite, username) VALUES (%s, %s, %s, ARRAY [%s], ARRAY [%s], %s, %s, %s)""", values)
         self.db.commit()
 
     def fetch_search(self, filtr):
@@ -130,7 +120,6 @@ class Database:
         except:
             return "error"
 
-
     def fetch_search_xxx(self):
         try:
             phraseCursor = self.db.cursor()
@@ -140,7 +129,6 @@ class Database:
             return list(result)
         except:
             return "error"
-
 
     def check_rec_not_exist(self, *link):
         linkCursor = self.db.cursor()

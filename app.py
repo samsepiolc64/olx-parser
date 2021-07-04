@@ -38,33 +38,29 @@ login_manager.login_view = "login"
 def load_user(user_id):
     return null
 
-
-
 def restart_program():
     python = sys.executable
     os.execl(python, python, *sys.argv)
 
 
-def multi(page):
+def multi(page, username):
     # print("parent:", os.getppid())
     # print("child:", os.getpid())
-    print(page)
-    offers = GetOffers(getenv('URL'), page)
+    #print(page)
+    offers = GetOffers(getenv('URL'), page, username)
     offers.get_offers()
 
 
 def loop_searching(pages):
-    print('next itteration')
     try:
         for page in range(1, int(pages)):
-            p = Process(target=multi, args=(page,), name="pool")
+            p = Process(target=multi, args=(page,session['username'],), name="pool")
             # p.setDaemon(True)
             p.start()
             procArray.append(p)
             #p.join()
     except:
         pass
-
 
 class RegisterForm(FlaskForm):
     username = StringField(validators = [InputRequired(), Length(min=4, max=20)], render_kw={"placeholder":"Username"})
@@ -81,7 +77,6 @@ class LoginForm(FlaskForm):
     username = StringField(validators = [InputRequired(), Length(min=4, max=20)], render_kw={"placeholder":"Username"})
     password = PasswordField(validators=[InputRequired(), Length(min=4, max=20)], render_kw={"placeholder":"Password"})
     submit = SubmitField("Login")
-
 
 # ***********************************
 # ***       MAIN route            ***
@@ -102,13 +97,11 @@ def start():
         version = getenv('VERSION')
 
         # print("children:", multiprocessing.active_children())
-
         # for p in multiprocessing.active_children():
         #     if p.name == "pool":
         #         print("aktywny")
         #     else:
         #         print("nieaktywny")
-
 
         return render_template('index.html', count=count, tags=tags, version=version, username=session["username"])
     return redirect(url_for("login"))
@@ -138,7 +131,6 @@ def login():
             flash("Incorrect username/passord")
     return render_template('index.html', login=1, form=form)
 
-
 # ***********************************
 # ***           LOGOUT            ***
 # ***********************************
@@ -149,8 +141,6 @@ def logout():
     session.pop("id", None)
     session.pop("username", None)
     return redirect(url_for("login"))
-
-
 
 # ***********************************
 # ***          REGISTER           ***
@@ -168,8 +158,6 @@ def register():
         return redirect(url_for('login'))
     return render_template('index.html', register=1, form=form)
 
-
-
 # ***********************************
 # ***           PROFILE           ***
 # ***********************************
@@ -181,9 +169,6 @@ def profile():
         account = base.profile_user(session["id"])
         return render_template('index.html', profile=1, account=account)
     return redirect(url_for("login"))
-
-
-
 
 # ***********************************
 # ***   SETTINGS operations       ***
@@ -204,7 +189,7 @@ def setinit():
 
     # base.create_db(getenv('SQL_DROP_USERS')) #tworzenie tabeli uzytkownikow
     base.create_db(getenv('SQL_USERS'))
-    
+
     # base.create_db(getenv('SQL_DROP_SETTINGS')) #tworzenie tabeli ustawien
     base.create_db(getenv('SQL_DEL_SETTINGS')) #czyszczenie tabeli ustawien
     base.create_db(getenv('SQL_SETTINGS'))
@@ -212,7 +197,6 @@ def setinit():
                        getenv('LINKS_PHRASES_SET_INIT'), getenv('LINKS_ANTYPHRASES_SET_INIT'),
                        getenv('LINKS_FAVORITE_SET_INIT'), getenv('LINKS_VISITED_SET_INIT'))
     return render_template('index.html', info="settings initioation")
-
 
 @app.route('/settings-save', methods=['GET', 'POST'])
 def setsave():
@@ -225,7 +209,6 @@ def setsave():
 
     # return redirect('/search')
 
-
 # ***********************************
 # ***   OFFERS operations         ***
 # ***********************************
@@ -237,7 +220,7 @@ def setup():
 
         base = Database()
         # use if initiate OFFER table
-        # base.create_db(getenv('SQL_DROP_OFFER'))
+        #base.create_db(getenv('SQL_DROP_OFFER'))
         # rem if initiate OFFER table
         base.create_db(getenv('SQL_DEL_OFFER'))
         base.create_db(getenv('SQL_OFFER'))
@@ -247,12 +230,9 @@ def setup():
 
     return redirect(url_for("login"))
 
-
 @app.route('/add')
 def add():
-
     if "loggedin" in session:
-
         base = Database()
         settings = base.fetch_settings()
         loop_searching(settings[1][2])
@@ -263,19 +243,12 @@ def add():
 
         tl.start()
         return render_template('index.html', info="parse new data")
-
-
     return redirect(url_for("login"))
-
 
 @app.route('/stop-add')
 def stopadd():
 
-
     if "loggedin" in session:
-
-
-
         # print("dlugosc tablicy:", len(procArray))
         # for p in procArray:
         #     p.setDaemon(False)
@@ -290,11 +263,7 @@ def stopadd():
 
         # restart_program()
         return render_template('index.html', info="add stop")
-
-
     return redirect(url_for("login"))
-
-
 
 @app.route('/offers-save', methods=['GET', 'POST'])
 def offersave():
@@ -303,7 +272,6 @@ def offersave():
         data = request.form.to_dict(flat=False)
         base.save_offer(data)
         return redirect('/search')
-
 
 # @app.route('/searchold')
 # def searchold():
@@ -318,12 +286,7 @@ def offersave():
 
 @app.route('/search', methods=['GET', 'POST'])
 def search():
-
-
     if "loggedin" in session:
-
-
-
         # base = Database()
         # links = base.fetch_search()
         # settings = base.fetch_settings()
@@ -332,7 +295,6 @@ def search():
         data = request.form.to_dict(flat=False)
         base.save_settings(data)
         settings = base.fetch_settings()
-
 
         for setting in settings:
             if setting[1] == "LinksPhrases":
@@ -377,13 +339,7 @@ def search():
                 Links_Phrases == "false" and Links_Antyphrases == "false" and Links_Favorite == "true" and Links_Visited == "false") or (
                 Links_Phrases == "false" and Links_Antyphrases == "false" and Links_Favorite == "false" and Links_Visited == "true")):
             links = 1
-
-
-
-        return render_template('index.html', links=links, settingsLinks=settings)
-
-
-
+        return render_template('index.html', links=links, settingsLinks=settings, username=session['username'])
     return redirect(url_for("login"))
 
 
@@ -396,15 +352,11 @@ def search():
 def excel():
 
     if "loggedin" in session:
-
-
         base = Database()
         output = base.base_to_xlsx()
         # return render_template('index.html', info=xxx)
         # return Response(xxx, mimetype="text/csv", headers={"Content-Disposition": "attachment;filename=csv-test.csv"})
         return Response(output, mimetype="application/ms-excel", headers={"Content-Disposition":"attachment;filename=excel-test.xls"})
-
-
     return redirect(url_for("login"))
 
 @app.route('/upload', methods=['GET', 'POST'])

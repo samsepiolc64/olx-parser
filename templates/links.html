@@ -22,10 +22,13 @@
                 {% endfor %}
                 {% endif %}
                 <span class="{% if link[6]==True %} text-white {% elif link[7]==True %} text-white {% else %} text-dark {% endif %} font-weight-light h6">{{ link[1] }}</span>
+                <span class="badge badge-info badge-pill font-weight-light">{{ link[8] }}</span>
             </div>
         </a>
         <div class="d-inline">
+
             <button type="input" class="close" aria-label="Close" name="deleted" value="True" onClick="submit();">
+
   <span aria-hidden="true">&times;</span>
 </button>
         </div>

@@ -4,9 +4,10 @@ from database import Database
 from dotenv import load_dotenv
 load_dotenv()
 class GetOffers:
-    def __init__(self, url, page):
+    def __init__(self, url, page, user):
         page = get(f'{url}?page={page}')
         bs = BeautifulSoup(page.content, 'html.parser')
+        self.user = user
         self.bs = bs
     def get_offers(self):
         base = Database()
@@ -43,5 +44,5 @@ class GetOffers:
                 if base.check_rec_not_exist(link):
                     visited = False
                     favorite = False
-                    base.insert(title, link, details, okTags, antyTags, visited, favorite)
+                    base.insert(title, link, details, okTags, antyTags, visited, favorite, self.user)
         print(iter_pages)
