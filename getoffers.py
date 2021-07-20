@@ -7,7 +7,7 @@ class GetOffers:
     def __init__(self, url, page, user):
         page = get(f'{url}?page={page}')
         bs = BeautifulSoup(page.content, 'html.parser')
-        self.user = user
+        self.username = user
         self.bs = bs
     def get_offers(self):
         base = Database()
@@ -44,5 +44,5 @@ class GetOffers:
                 if base.check_rec_not_exist(link):
                     visited = False
                     favorite = False
-                    base.insert(title, link, details, okTags, antyTags, visited, favorite, self.user)
+                    base.insert(title, link, details, okTags, antyTags, visited, favorite, self.username)
         print(iter_pages)

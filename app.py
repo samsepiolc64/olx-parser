@@ -18,6 +18,7 @@ from timeloop import Timeloop
 from datetime import timedelta
 import pandas as pd
 from werkzeug.security import generate_password_hash, check_password_hash
+from functools import wraps
 import multiprocessing
 import os
 
@@ -37,6 +38,16 @@ login_manager.login_view = "login"
 @login_manager.user_loader
 def load_user(user_id):
     return null
+
+def login_required(f):
+    @wraps(f)
+    def wrap(*args, **kwargs):
+        if 'loggedin' in session:
+            return f(*args, **kwargs)
+        else:
+            flash("You need to login first")
+            return redirect(url_for('login'))
+    return wrap
 
 def restart_program():
     python = sys.executable
@@ -83,28 +94,30 @@ class LoginForm(FlaskForm):
 # ***********************************
 
 @app.route('/')
+@login_required
 def start():
-    if "loggedin" in session:
-        global procArray
-        procArray = []
+    global procArray
+    procArray = []
 
-        # print(os.getppid())
-        # print(os.getpid())
+    # print(os.getppid())
+    # print(os.getpid())
 
-        base = Database()
-        tags = base.fetch_tags()
-        count = base.count_row_offers()
-        version = getenv('VERSION')
+    base = Database()
+    tags = base.fetch_tags()
+    count = base.count_row_offers()
+    version = getenv('VERSION')
 
-        # print("children:", multiprocessing.active_children())
-        # for p in multiprocessing.active_children():
-        #     if p.name == "pool":
-        #         print("aktywny")
-        #     else:
-        #         print("nieaktywny")
+    # print("children:", multiprocessing.active_children())
+    # for p in multiprocessing.active_children():
+    #     if p.name == "pool":
+    #         print("aktywny")
+    #     else:
+    #         print("nieaktywny")
 
-        return render_template('index.html', count=count, tags=tags, version=version, username=session["username"])
-    return redirect(url_for("login"))
+    return render_template('index.html', count=count, tags=tags, version=version, username=session["username"])
+
+
+
 
 # ***********************************
 # ***          LOGIN              ***
@@ -124,9 +137,9 @@ def login():
                 session["loggedin"] = True
                 session["id"] = account["id"]
                 session["username"] = account["username"]
-                return redirect(url_for("start"))
+                return redirect(url_for("search"))
             else:
-                flash("Incorrect username/passord")
+                flash("Incorrect username/password")
         else:
             flash("Incorrect username/passord")
     return render_template('index.html', login=1, form=form)
@@ -163,25 +176,22 @@ def register():
 # ***********************************
 
 @app.route('/profile')
+@login_required
 def profile():
     base = Database()
-    if "loggedin" in session:
-        account = base.profile_user(session["id"])
-        return render_template('index.html', profile=1, account=account)
-    return redirect(url_for("login"))
+    account = base.profile_user(session["id"])
+    return render_template('index.html', profile=1, account=account)
 
 # ***********************************
 # ***   SETTINGS operations       ***
 # ***********************************
 
 @app.route('/settings', methods=['GET', 'POST'])
+@login_required
 def settings():
-
-    if "loggedin" in session:
-        base = Database()
-        settings = base.fetch_settings()
-        return render_template('index.html', settings=settings)
-    return redirect(url_for("login"))
+    base = Database()
+    settings = base.fetch_settings()
+    return render_template('index.html', settings=settings)
 
 @app.route('/settings-init')
 def setinit():
@@ -206,7 +216,6 @@ def setsave():
     links = base.fetch_search(filtr=0)
     settings = base.fetch_settings()
     return render_template('index.html', links=links, settingsLinks=settings)
-
     # return redirect('/search')
 
 # ***********************************
@@ -214,56 +223,35 @@ def setsave():
 # ***********************************
 
 @app.route('/clear-offers')
+@login_required
 def setup():
-
-    if "loggedin" in session:
-
-        base = Database()
-        # use if initiate OFFER table
-        #base.create_db(getenv('SQL_DROP_OFFER'))
-        # rem if initiate OFFER table
-        base.create_db(getenv('SQL_DEL_OFFER'))
-        base.create_db(getenv('SQL_OFFER'))
-        # base.create_db(getenv('SQL_XLSX'))
-        return render_template('index.html', info="drop old and create new tables")
-
-
-    return redirect(url_for("login"))
+    base = Database()
+    # use if initiate OFFER table
+    # base.create_db(getenv('SQL_DROP_OFFER'))
+    # rem if initiate OFFER table
+    base.create_db(getenv('SQL_DEL_OFFER'))
+    base.create_db(getenv('SQL_OFFER'))
+    # base.create_db(getenv('SQL_XLSX'))
+    return render_template('index.html', info="drop old and create new tables")
 
 @app.route('/add')
+@login_required
 def add():
-    if "loggedin" in session:
-        base = Database()
-        settings = base.fetch_settings()
+    base = Database()
+    settings = base.fetch_settings()
+    loop_searching(settings[1][2])
+    @tl.job(interval=timedelta(seconds=float(settings[0][2])))
+    def sample_job_every_xxxs():
         loop_searching(settings[1][2])
-
-        @tl.job(interval=timedelta(seconds=float(settings[0][2])))
-        def sample_job_every_xxxs():
-            loop_searching(settings[1][2])
-
-        tl.start()
-        return render_template('index.html', info="parse new data")
-    return redirect(url_for("login"))
+    tl.start()
+    return render_template('index.html', info="parse new data")
 
 @app.route('/stop-add')
+@login_required
 def stopadd():
-
-    if "loggedin" in session:
-        # print("dlugosc tablicy:", len(procArray))
-        # for p in procArray:
-        #     p.setDaemon(False)
-        #     p.terminate
-        #     procArray.remove(p)
-        #
-        # print("dlugosc tablicy po terminate:", len(procArray))
-
-        # loop_searching()
-
-        tl.stop()
-
-        # restart_program()
-        return render_template('index.html', info="add stop")
-    return redirect(url_for("login"))
+    tl.stop()
+    # restart_program()
+    return render_template('index.html', info="add stop")
 
 @app.route('/offers-save', methods=['GET', 'POST'])
 def offersave():
@@ -285,12 +273,8 @@ def offersave():
 # ***********************************
 
 @app.route('/search', methods=['GET', 'POST'])
+@login_required
 def search():
-    if "loggedin" in session:
-        # base = Database()
-        # links = base.fetch_search()
-        # settings = base.fetch_settings()
-        # return render_template('index.html', links = links, settingsLinks = settings)
         base = Database()
         data = request.form.to_dict(flat=False)
         base.save_settings(data)
@@ -340,7 +324,6 @@ def search():
                 Links_Phrases == "false" and Links_Antyphrases == "false" and Links_Favorite == "false" and Links_Visited == "true")):
             links = 1
         return render_template('index.html', links=links, settingsLinks=settings, username=session['username'])
-    return redirect(url_for("login"))
 
 
 # ***********************************
@@ -349,17 +332,17 @@ def search():
 
 
 @app.route('/excel', methods=['GET', 'POST'])
+@login_required
 def excel():
+    base = Database()
+    output = base.base_to_xlsx()
+    # return render_template('index.html', info=xxx)
+    # return Response(xxx, mimetype="text/csv", headers={"Content-Disposition": "attachment;filename=csv-test.csv"})
+    return Response(output, mimetype="application/ms-excel", headers={"Content-Disposition":"attachment;filename=excel-test.xls"})
 
-    if "loggedin" in session:
-        base = Database()
-        output = base.base_to_xlsx()
-        # return render_template('index.html', info=xxx)
-        # return Response(xxx, mimetype="text/csv", headers={"Content-Disposition": "attachment;filename=csv-test.csv"})
-        return Response(output, mimetype="application/ms-excel", headers={"Content-Disposition":"attachment;filename=excel-test.xls"})
-    return redirect(url_for("login"))
 
 @app.route('/upload', methods=['GET', 'POST'])
+@login_required
 def upload():
     # base = Database()
     # base.create_db(getenv('SQL_DEL_XLSX'))
