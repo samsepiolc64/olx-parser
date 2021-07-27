@@ -21,6 +21,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from functools import wraps
 import multiprocessing
 import os
+from django.core.paginator import Paginator
 
 
 
@@ -280,6 +281,11 @@ def search():
         base.save_settings(data)
         settings = base.fetch_settings()
 
+
+
+
+
+
         for setting in settings:
             if setting[1] == "LinksPhrases":
                 Links_Phrases = setting[2]
@@ -323,7 +329,20 @@ def search():
                 Links_Phrases == "false" and Links_Antyphrases == "false" and Links_Favorite == "true" and Links_Visited == "false") or (
                 Links_Phrases == "false" and Links_Antyphrases == "false" and Links_Favorite == "false" and Links_Visited == "true")):
             links = 1
-        return render_template('index.html', links=links, settingsLinks=settings, username=session['username'])
+
+        list_paginator = Paginator(links, 30)
+        page_num = request.args.get('page')
+        page = list_paginator.get_page(page_num)
+
+
+        context = {
+            'count': list_paginator.count,
+            'count_pages': list_paginator.num_pages,
+            'list_paginator' : list_paginator,
+            'page' : page
+        }
+
+        return render_template('index.html', context = context,  links=links, settingsLinks=settings, username=session['username'])
 
 
 # ***********************************
