@@ -22,7 +22,11 @@ from functools import wraps
 import multiprocessing
 import os
 from django.core.paginator import Paginator
+import sys
+# import psutil
 
+# sys.path.append("./views")
+# from views.views import *
 
 
 load_dotenv()
@@ -31,6 +35,30 @@ Bootstrap(app)
 bcrypt = Bcrypt(app)
 app.config['SECRET_KEY'] = getenv('SECRET_KEY')
 tl = Timeloop()
+
+def checkIfProcessRunning(processName):
+    '''
+    Check if there is any running process that contains the given name processName.
+    '''
+    #Iterate over the all the running process
+    for proc in psutil.process_iter():
+        try:
+            # Check if process name contains the given name string.
+            if processName.lower() in proc.name().lower():
+                return True
+        except (psutil.NoSuchProcess, psutil.AccessDenied, psutil.ZombieProcess):
+            pass
+    return False;
+
+
+
+
+
+
+
+
+
+
 
 login_manager = LoginManager()
 login_manager.init_app(app)
@@ -50,40 +78,33 @@ def login_required(f):
             return redirect(url_for('login'))
     return wrap
 
-def restart_program():
-    python = sys.executable
-    os.execl(python, python, *sys.argv)
-
+# def restart_program():
+#     python = sys.executable
+#     os.execl(python, python, *sys.argv)
 
 def multi(page, username):
-    # print("parent:", os.getppid())
-    # print("child:", os.getpid())
-    #print(page)
+    print(page)
     offers = GetOffers(getenv('URL'), page, username)
     offers.get_offers()
 
-
 def loop_searching(pages):
-    try:
+
+        # jobs = []
         for page in range(1, int(pages)):
-            p = Process(target=multi, args=(page,session['username'],), name="pool")
-            # p.setDaemon(True)
+            p = Process(target=multi, args=(page,session['username'],))
+            # jobs.append(p)
+            p.daemon = True
             p.start()
-            procArray.append(p)
-            #p.join()
-    except:
-        pass
+        # print(jobs)
+        # for j in jobs:
+        #     j.join()
+
+
 
 class RegisterForm(FlaskForm):
     username = StringField(validators = [InputRequired(), Length(min=4, max=20)], render_kw={"placeholder":"Username"})
     password = PasswordField(validators=[InputRequired(), Length(min=4, max=20)], render_kw={"placeholder":"Password"})
     submit = SubmitField("Register")
-
-    # def validate_username(self, username):
-    #     existing_user_username = User.query.filter_by(username = username.data).first()
-    #     if existing_user_username:
-    #         raise ValidationError("That user already exists. Please choose a different one.")
-
 
 class LoginForm(FlaskForm):
     username = StringField(validators = [InputRequired(), Length(min=4, max=20)], render_kw={"placeholder":"Username"})
@@ -216,7 +237,8 @@ def setsave():
     base.save_settings(data)
     links = base.fetch_search(filtr=0)
     settings = base.fetch_settings()
-    return render_template('index.html', links=links, settingsLinks=settings)
+    # return render_template('index.html', links=links, settingsLinks=settings)
+    return render_template('index.html', settings=settings)
     # return redirect('/search')
 
 # ***********************************
@@ -251,7 +273,13 @@ def add():
 @login_required
 def stopadd():
     tl.stop()
-    # restart_program()
+
+    # print(procArray[0].is_alive())
+    # print(procArray[0].pid)
+    # for proc in procArray:
+    #     proc.join()
+    #     proc.close()
+
     return render_template('index.html', info="add stop")
 
 @app.route('/offers-save', methods=['GET', 'POST'])
@@ -280,11 +308,6 @@ def search():
         data = request.form.to_dict(flat=False)
         base.save_settings(data)
         settings = base.fetch_settings()
-
-
-
-
-
 
         for setting in settings:
             if setting[1] == "LinksPhrases":
