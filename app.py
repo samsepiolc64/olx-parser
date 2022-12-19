@@ -135,7 +135,7 @@ def start():
 # ***   INITIALIZE DATABASE       ***
 # ***********************************
 
-@app.route('/all-db-init')
+@app.route('/dbinit')
 def dbinit():
     base = Database()
     base.create_db(getenv('SQL_DROP_USERS')) #tworzenie tabeli uzytkownikow
