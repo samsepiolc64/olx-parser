@@ -131,7 +131,17 @@ def start():
     return render_template('index.html', count=count, tags=tags, version=version, username=session["username"])
 
 
+# ***********************************
+# ***   INITIALIZE DATABASE       ***
+# ***********************************
 
+@app.route('/all-db-init')
+def dbinit():
+    base = Database()
+    base.create_db(getenv('SQL_DROP_USERS')) #tworzenie tabeli uzytkownikow
+    base.create_db(getenv('SQL_DROP_SETTINGS')) #tworzenie tabeli ustawien
+    base.create_db(getenv('SQL_DROP_OFFER'))
+    
 
 # ***********************************
 # ***          LOGIN              ***
