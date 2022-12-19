@@ -138,9 +138,10 @@ def start():
 @app.route('/dbinit')
 def dbinit():
     base = Database()
-    base.create_db(getenv('SQL_DROP_USERS')) #tworzenie tabeli uzytkownikow
-    base.create_db(getenv('SQL_DROP_SETTINGS')) #tworzenie tabeli ustawien
-    base.create_db(getenv('SQL_DROP_OFFER'))
+    base.create_db(getenv('SQL_USERS')) #tworzenie tabeli uzytkownikow
+    base.create_db(getenv('SQL_SETTINGS')) #tworzenie tabeli ustawien
+    base.create_db(getenv('SQL_OFFER'))
+    base.create_db(getenv('SQL_XLSX'))
     
 
 # ***********************************
