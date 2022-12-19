@@ -142,8 +142,8 @@ def dbinit():
     base.create_db(getenv('SQL_SETTINGS')) #tworzenie tabeli ustawien
     base.create_db(getenv('SQL_OFFER'))
     base.create_db(getenv('SQL_XLSX'))
-    return redirect(url_for("login"))
-    
+    # return redirect(url_for("login"))
+    return render_template('index.html', info="initialized tables")
 
 # ***********************************
 # ***          LOGIN              ***
