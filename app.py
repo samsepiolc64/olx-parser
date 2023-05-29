@@ -223,11 +223,11 @@ def settings():
 def setinit():
     base = Database()
 
-    base.create_db(getenv('SQL_DROP_USERS')) #tworzenie tabeli uzytkownikow
-    base.create_db(getenv('SQL_USERS'))
+    # base.create_db(getenv('SQL_DROP_USERS')) #tworzenie tabeli uzytkownikow
+    # base.create_db(getenv('SQL_USERS'))
 
-    base.create_db(getenv('SQL_DROP_SETTINGS')) #tworzenie tabeli ustawien
-    base.create_db(getenv('SQL_DEL_SETTINGS')) #czyszczenie tabeli ustawien
+    # base.create_db(getenv('SQL_DROP_SETTINGS')) #tworzenie tabeli ustawien
+    # base.create_db(getenv('SQL_DEL_SETTINGS')) #czyszczenie tabeli ustawien
     base.create_db(getenv('SQL_SETTINGS'))
     base.settings_init(getenv('DURATION_SET_INIT'), getenv('PAGES_SET_INIT'), getenv('LINKS_ALL_SET_INIT'),
                        getenv('LINKS_PHRASES_SET_INIT'), getenv('LINKS_ANTYPHRASES_SET_INIT'),
@@ -256,7 +256,7 @@ def setup():
     # use if initiate OFFER table
     # base.create_db(getenv('SQL_DROP_OFFER'))
     # rem if initiate OFFER table
-    # base.create_db(getenv('SQL_DEL_OFFER'))
+    base.create_db(getenv('SQL_DEL_OFFER'))
     base.create_db(getenv('SQL_OFFER'))
     # base.create_db(getenv('SQL_XLSX'))
     return render_template('index.html', info="drop old and create new tables")
