@@ -224,10 +224,10 @@ def setinit():
     base = Database()
 
     # base.create_db(getenv('SQL_DROP_USERS')) #tworzenie tabeli uzytkownikow
-    # base.create_db(getenv('SQL_USERS'))
+    base.create_db(getenv('SQL_USERS'))
 
     # base.create_db(getenv('SQL_DROP_SETTINGS')) #tworzenie tabeli ustawien
-    # base.create_db(getenv('SQL_DEL_SETTINGS')) #czyszczenie tabeli ustawien
+    base.create_db(getenv('SQL_DEL_SETTINGS')) #czyszczenie tabeli ustawien
     base.create_db(getenv('SQL_SETTINGS'))
     base.settings_init(getenv('DURATION_SET_INIT'), getenv('PAGES_SET_INIT'), getenv('LINKS_ALL_SET_INIT'),
                        getenv('LINKS_PHRASES_SET_INIT'), getenv('LINKS_ANTYPHRASES_SET_INIT'),
