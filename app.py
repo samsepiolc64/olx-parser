@@ -254,7 +254,7 @@ def setsave():
 def setup():
     base = Database()
     # use if initiate OFFER table
-    base.create_db(getenv('SQL_DROP_OFFER'))
+    # base.create_db(getenv('SQL_DROP_OFFER'))
     # rem if initiate OFFER table
     # base.create_db(getenv('SQL_DEL_OFFER'))
     base.create_db(getenv('SQL_OFFER'))
